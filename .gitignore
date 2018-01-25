@@ -1,0 +1,6 @@
+docs-book/final_app/*
+docs-book/output/*
+docs-book/tree-view.atloc
+*.log
+.DS_Store
+docs-content/.DS_Store
