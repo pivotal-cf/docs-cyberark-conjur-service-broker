@@ -1,115 +1,112 @@
 ---
-title: YOUR-PRODUCT-NAME (Beta)
+title: CyberArk Conjur Service Broker for PCF (Beta)
 owner: Partners
 ---
 
 <p class="note warning">
 <strong>WARNING! </strong>
-The PRODUCT-NAME for PCF tile is currently in beta and is intended for evaluation and test purposes only. 
+The CyberArk Conjur Service Broker for PCF tile is currently in beta and is intended for evaluation and test purposes only. 
 Do not use this product in a PCF production environment.
 </p>
 
-**This topic begins with a brief description of what the product tile (e.g. Apigee Edge Service Broker for PCF) does, 
-whereas the Overview section below describes what the service itself (e.g. Apigee Edge) does. See below for an example.**
+This documentation describes the CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF). This service broker provides Conjur machine identity management and authentication, policy-based authorization, and other Conjur services to your PCF applications and microservices. 
 
-This documentation describes the Apigee Edge Service Broker for Pivotal Cloud Foundry (PCF). The Apigee Edge Service 
-Broker for PCF enables developers to manage APIs for their PCF apps through the Apigee Edge management console.
-
-**Note**: This description will appear under **OVERVIEW** in the tile's listing on 
-[Pivotal Network](http://network.pivotal.io).
 
 ## <a id='overview'></a>Overview
 
-**The overview describes the service that your product offers to PCF developers. 
-Make sure to overview the features of the integration.
-Don't focus only on the overview of your product that is being integrated.
-See below for an example.**
+The CyberArk Conjur Service Broker for PCF registers a service broker with PCF and exposes its service plans on the Marketplace. Developers can then create applications that access a Conjur appliance. The service broker provides the interface between your PCF applications and a Conjur appliance. 
 
-The Apigee Edge Service Broker for PCF registers a service broker with PCF and exposes its service plans on the 
-Marketplace. Developers can then create service plan instances using Apps Manager or the Cloud Foundry Command 
-Line Interface (cf CLI) and bind them to their apps.
+The CyberArk Conjur Service Broker for PCF installs a buildpack that includes the Conjur Summon tool. Summon fetches secrets from Conjur using the binding ID from your PCF service as the unique application identity.  
 
-Creating an Apigee Edge for PCF service instance and binding it to an app creates an Apigee Edge API proxy that 
-handles requests for the app. This lets developers use the Apigee Edge management console to manage API request 
-handling between clients and the app.
-
-**Note**: This overview will appear under **OVERVIEW**, combined with the description above in the tile's listing on 
-[Pivotal Network](http://network.pivotal.io).
 
 ## <a id='features'></a>Key Features
 
-**Note**: This feature list will appear under **FEATURES** in the tile's listing on 
-[Pivotal Network](http://network.pivotal.io). 
-Make sure you list the key features of the tile (the integration). 
-We cannot accept a list of the key features of your product that we are integrating.
+CyberArk Conjur Service Broker for PCF includes the following key features:
 
-YOUR-PRODUCT-NAME includes the following key features:
-
-* Feature one.
-* Feature two.
-* Feature three.
-
+* After you configure the tile and bind applications to service instances, your PCF applications, containers, and microservices assume a host identity in Conjur.  This identity enables secure access to secret values and policy grants stored in Conjur. 
+ 
+* If you have an existing Conjur appliance, Conjur policy can grant privileges to the PCF applications to access the existing Conjur secrets.      
+* Conjur integrates easily into the PCF environment and the PCF developer workflow.  
+* The strong authentication model provided by Conjur is available to PCF applications. 
+* The Conjur role-based policy model for authorizations applies to applications running in PCF.  
+* Access to secrets is configurable at the PCF application level, making it easy to ensure least privilege access.
 
 
 ## <a id="snapshot"></a>Product Snapshot
 
-The following table provides version and version-support information about PRODUCT-NAME.
+The following table provides version and version-support information about CyberArk Conjur Service Broker for PCF.
+
 
 <table class="nice">
     <th>Element</th>
     <th>Details</th>
     <tr>
         <td>Tile version</td>
-        <td>vYOUR-VERSION-NUMBER</td>
+        <td>v0.1.0</td>
     </tr>
     <tr>
         <td>Release date</td>
-        <td>YOUR-RELEASE-DATE (Ex: July 1, 2017)</td>
+        <td>January 31, 2018 (Beta)</td>
     </tr>
     <tr>
         <td>Software component version</td>
-        <td>vYOUR-SOFTWARE-COMPONENT-VERSION-NUMBER</td>
+        <td>CyberArk Conjur Service Broker - v0.1.0<br>
+            CyberArk Conjur Buildpack - v0.1.0</td>
     </tr>
     <tr>
         <td>Compatible Ops Manager version(s)</td>
-        <td>vYOUR-COMPATIBLE-OPS-MAN-VERSION (Ex. v1.11.x, v1.12.x, and v2.0.x)</td>
+        <td>vYOUR-COMPATIBLE-OPS-MAN-VERSION (Ex. v1.8.x, v1.9.x, and v1.10.x)</td>
     </tr>
     <tr>
-        <td>Compatible Pivotal Application Service (formerly known as Elastic Runtime) version(s)</td>
-        <td>vYOUR-COMPATIBLE-PIVOTAL-APPLICATION-SERVICE-VERSION (Ex. v1.11.x, v1.12.x, and v2.0.X)</td>
+        <td>Compatible Elastic Runtime version(s)</td>
+        <td>vYOUR-COMPATIBLE-ELASTIC-RUNTIME-VERSION (Ex. v1.8.x, v1.9.x, and v1.10.x)</td>
     </tr>
     <tr>
         <td>IaaS support</td>
-        <td>AWS?, Azure?, GCP?, OpenStack?, and vSphere?</td>
+        <td>.</td>
     </tr>
     <tr>
         <td>IPsec support?</td>
-        <td>[Yes or No]</td>
+        <td>Yes</td>
     </tr>
 </table>
-* As of PCF v2.0, <em>Elastic Runtime</em> is renamed <em>Pivotal Application Service (PAS)</em>. 
 
 ## <a id="reqs"></a>Requirements
 
-**Provide any general or specific requirements, prerequisites, or dependencies here. 
-A general requirement might be something like, "An AppDynamics account." 
-A specific requirement might be something like, "Packaging Dependencies for Offline Buildpacks."**
 
-YOUR-PRODUCT-NAME has the following requirements:
+CyberArk Conjur Service Broker for PCF has the following requirements:  
 
-+ PREREQUISITE-1
 
-+ PREREQUISITE-2
++ The CyberArk Conjur Service Broker for PCF requires that you have an existing version 5 Conjur appliance installed. The Conjur appliance may be external to the PCF environment. 
 
+ If you do not already have a running Conjur appliance, you can quickly get a hosted evaluation Conjur instance running. Visit the [hosted Conjur page](https://www.conjur.org/get-started/try-conjur.html) to sign up for a hosted Conjur instance.  
+
++ To configure the tile, you must know the Conjur appliance Account ID, a valid Conjur user name, and associated API Key.  
+
+ * The Account ID is specified when the Conjur appliance is created and configured. For hosted Conjur, the account is usually an email address that you specify on the web form.  
+ 
+ * The Conjur user must have update and create privileges on the root Conjur policy. These privileges will be used to add and remove hosts from the Conjur policy as applications are deployed to or removed from PCF.  
+ 
+  
+ 
+ 
+ 
 ## <a id="limitations"></a>Limitations
 
-**List any known limitations.**
+There are no known limitations.
 
 ## <a id="feedback"></a>Feedback
 
 If you have a feature request, questions, or information about a bug, please email
-[Pivotal Cloud Foundry Feedback](mailto:cf-feedback@pivotal.io) list or send an email to YOUR-SUPPORT-EMAIL.
+[Pivotal Cloud Foundry Feedback](mailto:pivotal-cf-feedback@pivotal.io) list or send an email to [CyberArk Support](mailto:support@cyberark.com).
+
 
 ## <a id='license'></a>License
 
-**List any license information here.**
+Copyright 2018 CyberArk
+
+Licensed under the Apache License, Version 2.0 (the "License"). You may not use this software except in compliance with the License. You may obtain a copy of the License at
+
+[http://www.apache.org/licenses/LICENSE-2.0]()
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
