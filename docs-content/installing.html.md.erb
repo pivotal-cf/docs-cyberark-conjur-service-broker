@@ -20,11 +20,10 @@ This adds the tile to your staging area.
 1. Click the **Settings** tab.  
 
 1. Configure the side tabs. The tabs with orange circles require configuration. The others are optional.           
-  
-  - [Assign AZs and Networks](#assign-az)
-  - [Service Broker Configuration](#config-service-broker)  
-  - [Service Access](#config-service-access)
-  - [Stemcell](#config-stemcell)
+  * [Assign AZs and Networks](#assign-az)
+  * [Service Broker Configuration](#config-service-broker)  
+  * [Service Access](#config-service-access)
+  * [Stemcell](#config-stemcell)
 
 1. Click **Save**.
 
@@ -42,16 +41,14 @@ This tab configures communication between the Service Broker and a Conjur applia
 
 ![Conjur Service Broker Configuration tab](service_broker_config_screen.png)
 
-  - **Conjur Account**: The organization account assigned during Conjur appliance installation. If you are using a hosted Conjur instance for a proof of concept, the Account is typically your email address.  
-
-  - **Conjur Appliance URL**: The URL of the Conjur appliance that you are connecting to.
-
-  - **Conjur Login**: The username of a Conjur user. 
+  * **Conjur Account**: The organization account assigned during Conjur appliance installation. If you are using a hosted Conjur instance for a proof of concept, the account is typically your email address.
+  * **Conjur Appliance URL**: The URL of the Conjur appliance that you are connecting to.
+  * **Conjur Login**: The username of a Conjur user. 
   
 The user ID must have the ability to update and create privileges on the root Conjur policy. 
 This login is only used to add and remove hosts from the Conjur policy files as your applications are deployed to or removed from PCF. 
 
-  - **Conjur API Key**: The API Key of the Conjur user whose username you have provided in the **Conjur Login** field. 
+  * **Conjur API Key**: The API key of the Conjur user whose username you have provided in the **Conjur Login** field. 
 
   If the user's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.        
 
@@ -59,18 +56,13 @@ This login is only used to add and remove hosts from the Conjur policy files as 
 
 ###<a id='config-buildpack'></a>Buildpack Setttings  
 
-Do not change the installed sequence. The following sequence is required. 
-  
- - **meta\_buildpack** first.
- - **conjur\_buildpack** second. 
+Do not change the installed sequence. **meta\_buildpack** must install first, and **conjur\_buildpack** must install second. 
 
 ###<a id='config-service-access'></a>Service Access
 
-  - **Enable global access to plans of service Conjur**: 
-  
-   - If checked (the default), the Conjur service is available to all PCF users, across all orgs and spaces.   
+If **Enable global access to plans of service Conjur** is checked, the Conjur service is available to all PCF users, across all orgs and spaces.   
    
-   - To configure more precise access control, uncheck this option and use **cf enable-service-access** to specify which orgs and spaces can access the Conjur service.    
+To configure more precise access control, uncheck this option and use **cf enable-service-access** to specify which orgs and spaces can access the Conjur service.    
 
 ###<a id='config-errands'></a>Errands
 
@@ -84,8 +76,8 @@ The default settings are appropriate.
  
 The latest major stemcell release is required by CyberArk Conjur Service Broker for PCF. 
 
-+ If the Stemcell side tab has a green checkmark, you have the latest release and no action is required.
+If the Stemcell side tab has a green checkmark, you have the latest release and no action is required.
 
-+ If the Stemcell side tab has an orange circle, install the requested stemcell. 
+If the Stemcell side tab has an orange circle, install the requested stemcell. 
  
 
