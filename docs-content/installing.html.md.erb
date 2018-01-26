@@ -4,7 +4,7 @@ owner: Partners
 ---
  
 
-This topic describes how to install and configure CyberArk Conjur Service Broker for PCF.
+This topic describes how to install and configure CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF).
 
 ##<a id='install'></a>Install and Configure CyberArk Conjur Service Broker for PCF
 
@@ -19,13 +19,12 @@ This adds the tile to your staging area.
 
 1. Click the **Settings** tab.  
 
-1. Configure the side tabs. The tabs with orange circles require attention. Others are optional.           
+1. Configure the side tabs. The tabs with orange circles require configuration. The others are optional.           
   
   - <a href = "assign-az">Assign AZs and Networks</a>
   - <a href = "config-service-broker">Service Broker Configuration</a>  
   - <a href = "config-service-access">Service Access</a> 
   - <a href = "config-stemcell">Stemcell</a>
-
 
 1. Click **Save**.
 
@@ -51,7 +50,8 @@ This tab configures communication between the Service Broker and a Conjur applia
 
   - **Conjur Login**: The username of a Conjur user. 
   
-  The user ID must have update and create privileges on the root Conjur policy. This login is only used to add and remove hosts from the Conjur policy files as your applications are deployed to or removed from PCF. 
+The user ID must have the ability to update and create privileges on the root Conjur policy. 
+This login is only used to add and remove hosts from the Conjur policy files as your applications are deployed to or removed from PCF. 
   
   
 
@@ -59,7 +59,7 @@ This tab configures communication between the Service Broker and a Conjur applia
 
   If the user's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.        
 
-NOTE: The Conjur user credentials configured here are available only to PCF admins.  They are not generally accessible to users in PCF.
+<p class="note"><strong>Note</strong> The Conjur user credentials configured here are available only to PCF admins.  They are not generally accessible to users in PCF.</p>
 
 ###<a id='config-buildpack'></a>Buildpack Setttings  
 

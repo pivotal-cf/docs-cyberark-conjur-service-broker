@@ -3,7 +3,7 @@ title: Using CyberArk Conjur Service Broker for PCF
 owner: Partners
 ---
 
-This topic describes how to use CyberArk Conjur Service Broker for PCF.
+This topic describes how to use CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF).
 
 ##<a id='using'></a> Using CyberArk Conjur Service Broker for PCF
 
@@ -33,7 +33,9 @@ You can push the same application to multiple spaces. After preparing the applic
 #####<a id="secrets"></a>1 - Prepare the Application
 
  
-The CyberArk Conjur Service Broker for PCF uses the Summon application included in the Conjur Buildpack by default to fetch secrets from the Conjur appliance and inject the values into your application's environment.  The secrets are fetched at application startup, are available only to the application process (not to users), and are gone when the process exits.  Summon requires a `secrets.yml` file in the application's root folder. 
+The CyberArk Conjur Service Broker for PCF uses the Summon application included in the Conjur Buildpack by default to fetch secrets from the Conjur appliance and inject the values into your application's environment.  
+The secrets, fetched at application startup, are available only to the application process (not to users), and are gone when the process exits.  
+Summon requires a `secrets.yml` file in the application's root folder. 
 
 If your application uses another method to access secrets, such as Conjur API calls, you do not need a `secrets.yml` file.  
 
@@ -100,10 +102,9 @@ Add the instance-name from the previous step to the list of services in the appl
 Target your desired orgs and spaces and push the application and its associated files. Use `cf push --no-start` to avoid starting the application before it is configured to work with Conjur.
 
  
-
 #####<a id="bind"></a>5 - Obtain the Binding ID  
 
-**NOTE**: Binding occurred automatically if the application manifest contains the correct service instance name.  If you are not using a manifest, run the `cf bind-service` command to bind the application manually.  For example: 
+<p class="note"><strong>Note</strong>: Binding occurred automatically if the application manifest contains the correct service instance name.  If you are not using a manifest, run the `cf bind-service` command to bind the application manually.</p>  For example: 
 
 (optional)`$ cf bind-service <my-app> <my-service-instance-name>`
 
