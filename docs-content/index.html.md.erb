@@ -3,11 +3,8 @@ title: CyberArk Conjur Service Broker for PCF (Beta)
 owner: Partners
 ---
 
-<p class="note warning">
-<strong>WARNING! </strong>
-The CyberArk Conjur Service Broker for PCF tile is currently in beta and is intended for evaluation and test purposes only. 
-Do not use this product in a PCF production environment.
-</p>
+<p class="note warning"><strong>WARNING:</strong> The CyberArk Conjur Service Broker for PCF tile is currently in beta and is intended for evaluation and test purposes only. 
+Do not use this product in a PCF production environment.</p>
 
 This documentation describes the CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF). This service broker provides Conjur machine identity management and authentication, policy-based authorization, and other Conjur services to your PCF applications and microservices. 
 
@@ -23,8 +20,7 @@ The CyberArk Conjur Service Broker for PCF installs a buildpack that includes th
 
 CyberArk Conjur Service Broker for PCF includes the following key features:
 
-* After you configure the tile and bind applications to service instances, your PCF applications, containers, and microservices assume a host identity in Conjur.  This identity enables secure access to secret values and policy grants stored in Conjur. 
- 
+* After you configure the tile and bind applications to service instances, your PCF applications, containers, and microservices assume a host identity in Conjur. This identity enables secure access to secret values and policy grants stored in Conjur.
 * If you have an existing Conjur appliance, Conjur policy can grant privileges to the PCF applications to access the existing Conjur secrets.      
 * Conjur integrates easily into the PCF environment and the PCF developer workflow.  
 * The strong authentication model provided by Conjur is available to PCF applications. 
@@ -34,8 +30,9 @@ CyberArk Conjur Service Broker for PCF includes the following key features:
 
 ## <a id="snapshot"></a>Product Snapshot
 
-The following table provides version and version-support information about CyberArk Conjur Service Broker for PCF.
+<p class='note'><strong>Note:</strong> As of PCF v2.0, Elastic Runtime is renamed Pivotal Application Service (PAS).</p> 
 
+The following table provides version and version-support information about CyberArk Conjur Service Broker for PCF.
 
 <table class="nice">
     <th>Element</th>
@@ -58,7 +55,7 @@ The following table provides version and version-support information about Cyber
         <td>vYOUR-COMPATIBLE-OPS-MAN-VERSION (Ex. v1.8.x, v1.9.x, and v1.10.x)</td>
     </tr>
     <tr>
-        <td>Compatible Pivotal Application Service (formerly known as Elastic Runtime) version(s)</td>
+        <td>Compatible Pivotal Application Service version(s)</td>
         <td>vYOUR-COMPATIBLE-Pivotal-Application-Services-VERSION (Ex. v1.8.x, v1.9.x, and v1.10.x)</td>
     </tr>
     <tr>
@@ -70,31 +67,23 @@ The following table provides version and version-support information about Cyber
         <td>Yes</td>
     </tr>
 </table>
-\* As of PCF v2.0, <em>Elastic Runtime</em> is renamed <em>Pivotal Application Service (PAS)</em>. 
+
 
 ## <a id="reqs"></a>Requirements
 
-
-CyberArk Conjur Service Broker for PCF has the following requirements:  
-
+CyberArk Conjur Service Broker for PCF has the following requirements:
 
 + The CyberArk Conjur Service Broker for PCF requires that you have an existing version 5 Conjur appliance installed. The Conjur appliance may be external to the PCF environment. 
-
- If you do not already have a running Conjur appliance, you can quickly get a hosted evaluation Conjur instance running. Visit the [hosted Conjur page](https://www.conjur.org/get-started/try-conjur.html) to sign up for a hosted Conjur instance.  
-
+  * If you do not already have a running Conjur appliance, you can quickly get a hosted evaluation Conjur instance running. Visit the [hosted Conjur page](https://www.conjur.org/get-started/try-conjur.html) to sign up for a hosted Conjur instance.
 + To configure the tile, you must know the Conjur appliance Account ID, a valid Conjur user name, and associated API Key.  
+  * The Account ID is specified when the Conjur appliance is created and configured. For hosted Conjur, the account is usually an email address that you specify on the web form.
+  * The Conjur user must have update and create privileges on the root Conjur policy. These privileges will be used to add and remove hosts from the Conjur policy as applications are deployed to or removed from PCF.
 
- * The Account ID is specified when the Conjur appliance is created and configured. For hosted Conjur, the account is usually an email address that you specify on the web form.  
- 
- * The Conjur user must have update and create privileges on the root Conjur policy. These privileges will be used to add and remove hosts from the Conjur policy as applications are deployed to or removed from PCF.  
- 
-  
- 
- 
- 
+
 ## <a id="limitations"></a>Limitations
 
 There are no known limitations.
+
 
 ## <a id="feedback"></a>Feedback
 
