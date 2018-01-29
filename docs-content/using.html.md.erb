@@ -3,7 +3,7 @@ title: Using CyberArk Conjur Service Broker for PCF
 owner: Partners
 ---
 
-This topic describes how to use CyberArk Conjur Service Broker for PCF.
+This topic describes how to use CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF).
 
 ##<a id='using'></a> Using CyberArk Conjur Service Broker for PCF
 
@@ -13,27 +13,21 @@ The CyberArk Conjur Service Broker for PCF provides the interface between PCF ap
 
 This procedure enables a PCF application to obtain secrets and manage authorization privileges from an existing Conjur appliance.
 
-You can push the same application to multiple spaces. After preparing the application (as described in Step 1 below), target your desired orgs and spaces and perform the remaining steps for each space.    
+You can push the same application to multiple spaces. After preparing the application as described in Step 1 below, target your desired orgs and spaces and perform the remaining steps for each space.    
 
-   
- - <a href = "secrets">1 - Prepare the Application</a>
- 
- - <a href = "create-service">2 - Create a Service Instance </a>
- 
- - <a href = "manifest">3 - Edit Manifest File
+ - [Step 1: Prepare the Application](#secrets)
+ - [Step 2: Create a Service Instance](#create-service)
+ - [Step 3: Edit Manifest File](#manifest)
+ - [Step 4: Push Application to PCF Space](#push-app)
+ - [Step 5: Obtain the Binding ID](#bind)
+ - [Step 6: Update the Conjur Policy File with the Binding ID](#update-policy)
+ - [Step 7: Restage the Application](#restage)
 
- - <a href = "push-app">4 - Push Application to PCF Space</a>
+####<a id="secrets"></a>Step 1: Prepare the Application
 
- - <a href = "bind">5 - Obtain the Binding ID</a>
- 
- - <a href = "update-policy">6 - Update the Conjur Policy File with the Binding ID</a>
-  
- - <a href = "restage">7 - Restage the Application</a> 
-
-#####<a id="secrets"></a>1 - Prepare the Application
-
- 
-The CyberArk Conjur Service Broker for PCF uses the Summon application included in the Conjur Buildpack by default to fetch secrets from the Conjur appliance and inject the values into your application's environment.  The secrets are fetched at application startup, are available only to the application process (not to users), and are gone when the process exits.  Summon requires a `secrets.yml` file in the application's root folder. 
+The CyberArk Conjur Service Broker for PCF uses the Summon application included in the Conjur Buildpack by default to fetch secrets from the Conjur appliance and inject the values into your application's environment.  
+The secrets, fetched at application startup, are available only to the application process (not to users), and are gone when the process exits.  
+Summon requires a `secrets.yml` file in the application's root folder. 
 
 If your application uses another method to access secrets, such as Conjur API calls, you do not need a `secrets.yml` file.  
 
@@ -42,7 +36,6 @@ If your application uses another method to access secrets, such as Conjur API ca
   2. Add entries to the file to define the secrets that the application will fetch from the Conjur appliance.
  
   2. Store the `secrets.yml` file in the root folder of your application. 
-
 
 The following example of a `secrets.yml` file shows several types of allowed entries.  
  
@@ -53,11 +46,11 @@ AWS_REGION: us-east-1
 SSL_CERT: !var:file ssl/certs/private
 ```
 
- - lines 1 and 2 specify variables with pathnames containing the secret.
- - line 3 specifies a literal string for the secret. 
- - line 4 specifies a variable that is a file containing the secret.
+Lines 1 and 2 specify variables with pathnames containing the secret.
+Line 3 specifies a literal string for the secret. 
+Line 4 specifies a variable that is a file containing the secret.
 
-In the context of a PCF environment, the above example could resolve to the following results: 
+In the context of a PCF environment, the above example could produce the following results: 
  
 ```
 AWS_ACCESS_KEY_ID: AKIAI44QH8DHBEXAMPLE
@@ -69,8 +62,7 @@ SSL_CERT: /tmp/ssl-cert.pem
 For more information about syntax and options for a `secrets.yml` file, see the secrets.yml section [in the Summon documentation](https://cyberark.github.io/summon/). 
 
 
-#####<a id="create-service"></a>2 - Create a Service Instance  
-
+####<a id="create-service"></a>Step 2: Create a Service Instance  
 
 In the PCF space where you intend to deploy the application, create a service instance.   
  
@@ -82,8 +74,9 @@ In the command above:
 * The service-name is `cyberark-conjur`. 
 * There is a single free service plan called `community`.
 * For convenience, you may use the same instance-name in multiple PCF spaces, so that the same application manifest works in all spaces.      
-      
-#####<a id="edit-manifest"></a>3 - Edit Application Manifest  
+
+ 
+####<a id="edit-manifest"></a>Step 3: Edit Application Manifest  
 
 Add the instance-name from the previous step to the list of services in the application manifest (if you are using a manifest).  For example: 
  
@@ -93,17 +86,16 @@ Add the instance-name from the previous step to the list of services in the appl
     services:
     - <my-service-instance-name> 
    ```
+ 
 
-
-#####<a id="push-app"></a>4 - Push Application to PCF Space
+####<a id="push-app"></a>Step 4: Push Application to PCF Space
 
 Target your desired orgs and spaces and push the application and its associated files. Use `cf push --no-start` to avoid starting the application before it is configured to work with Conjur.
 
  
+####<a id="bind"></a>Step 5: Obtain the Binding ID  
 
-#####<a id="bind"></a>5 - Obtain the Binding ID  
-
-**NOTE**: Binding occurred automatically if the application manifest contains the correct service instance name.  If you are not using a manifest, run the `cf bind-service` command to bind the application manually.  For example: 
+Binding occurs automatically if the application manifest contains the correct service instance name. If you are not using a manifest, run the `cf bind-service` command to bind the application manually. For example: 
 
 (optional)`$ cf bind-service <my-app> <my-service-instance-name>`
 
@@ -119,9 +111,9 @@ The following command extracts just the ID value that you need.
   $ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g'
   ```  
 
-#####<a id="update-policy"></a>6 - Update Conjur Policy Grants for this Application      
+####<a id="update-policy"></a>6 - Update Conjur Policy Grants for this Application      
 
-The binding ID that was obtained in the previous step becomes the host ID to use in Conjur policies.  
+The binding ID obtained in the previous step becomes the host ID to use in Conjur policies.  
 
  1. Log into the Conjur appliance.   
  
@@ -142,8 +134,7 @@ The binding ID that was obtained in the previous step becomes the host ID to use
   ```
 
 
-
-#####<a id="restage"></a>7 - Restage the Application 
+####<a id="restage"></a>Step 7: Restage the Application 
   
 Start or restage the application. 
 
