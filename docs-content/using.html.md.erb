@@ -108,7 +108,7 @@ The following command extracts just the ID value that you need.
  
 <pre class='term'>$ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g'</pre>
 
-####<a id="update-policy"></a>Step 6 - Update Conjur Policy Grants for this Application      
+####<a id="update-policy"></a>Step 6: Update Conjur Policy Grants for this Application      
 
 The binding ID obtained in the previous step becomes the host ID to use in Conjur policies.  
 
