@@ -66,9 +66,8 @@ For more information about syntax and options for a `secrets.yml` file, see the 
 
 In the PCF space where you intend to deploy the application, create a service instance.   
  
-```
-$ cf create-service cyberark-conjur community <my-service-instance-name> 
-``` 
+<pre class='term'>$ cf create-service cyberark-conjur community <my-service-instance-name></pre>
+
 In the command above:
 
 * The service-name is `cyberark-conjur`. 
@@ -97,7 +96,7 @@ Target your desired orgs and spaces and push the application and its associated 
 
 Binding occurs automatically if the application manifest contains the correct service instance name. If you are not using a manifest, run the `cf bind-service` command to bind the application manually. For example: 
 
-(optional)`$ cf bind-service <my-app> <my-service-instance-name>`
+<pre class='term'>$ cf bind-service <my-app> <my-service-instance-name></pre>
 
 The binding process generates a binding ID that becomes the Conjur host ID, used as a unique application identity for this application running in this space.
 
@@ -107,9 +106,7 @@ The ID is stored in the `authn_login` string found under the VCAP_SERVICES envir
 
 The following command extracts just the ID value that you need. 
  
-  ```
-  $ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g'
-  ```  
+<pre class='term'>$ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g'</pre>
 
 ####<a id="update-policy"></a>Step 6 - Update Conjur Policy Grants for this Application      
 
@@ -129,18 +126,14 @@ The binding ID obtained in the previous step becomes the host ID to use in Conju
    
  If you save the policy to a file named `entitlements.yml`, you can load the policy into Conjur using the Conjur CLI. For example:  
  
-  ```
-  $ conjur policy load my-policy /path/to/entitlements.yml
-  ```
+<pre class='term'>$ conjur policy load my-policy /path/to/entitlements.yml</pre>
 
 
 ####<a id="restage"></a>Step 7: Restage the Application 
   
 Start or restage the application. 
 
-```
-$ cf restage my-app
-```
+<pre class='term'>$ cf restage my-app</pre>
 
 On application startup, the service loads the secrets that are defined in the application's `secrets.yml` into the PCF environment. 
 
