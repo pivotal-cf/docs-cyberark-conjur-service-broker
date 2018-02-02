@@ -8,6 +8,10 @@ This topic describes how to use CyberArk Conjur Service Broker for Pivotal Cloud
 ##<a id='using'></a> Using CyberArk Conjur Service Broker for PCF
 
 The CyberArk Conjur Service Broker for PCF provides the interface between PCF applications and a Conjur appliance. 
+
+ - [Deploy a PCF Application that Accesses Secrets from Conjur](#deploy-application)
+ 
+ - [Use a Custom Buildpack](#custom-bp)
  
 ###<a id='deploy-application'></a>Deploy a PCF Application that Accesses Secrets from Conjur   
 
@@ -90,7 +94,14 @@ Add the instance-name from the previous step to the list of services in the appl
 
 ####<a id="push-app"></a>Step 4: Push Application to PCF Space
 
-Target your desired orgs and spaces and push the application and its associated files. Use `cf push --no-start` to avoid starting the application before it is configured to work with Conjur.
+If your application lists buildpacks in its manifest, see [Use a Custom BuildPack](#custom-bp) before proceeding with this step.    
+
+Target your desired orgs and spaces and push the application and its associated files. 
+
+```
+cf push ...   
+```
+Use the `--no-start` option to avoid starting the application before it is configured to work with Conjur.
 
  
 ####<a id="bind"></a>Step 5: Obtain the Binding ID  
@@ -145,7 +156,11 @@ $ cf restage my-app
 On application startup, the service loads the secrets that are defined in the application's `secrets.yml` into the PCF environment. 
 
 
+###<a id='custom-bp'></a>Use a Custom Buildpack
 
+The `cf push` command in the previous procedure defaults to using the buildpacks included in CyberArk Conjur Service Broker for PCF. If your application uses a custom buildpack,  such as a node.js buildpack, see the following file for instructions.  
+
+[https://github.com/cyberark/cloudfoundry-conjur-buildpack/blob/master/README.md]()
    
 
 
