@@ -71,7 +71,7 @@ For more information about syntax and options for a `secrets.yml` file, see the 
 In the PCF space where you intend to deploy the application, create a service instance.   
  
 ```
-$ cf create-service cyberark-conjur community <my-service-instance-name> 
+$ cf create-service cyberark-conjur community my-service-instance-name 
 ``` 
 In the command above:
 
@@ -86,9 +86,9 @@ Add the instance-name from the previous step to the list of services in the appl
  
    ```
  applications:
-  - name: <my-app>
+  - name: my-app
     services:
-    - <my-service-instance-name> 
+    - my-service-instance-name 
    ```
  
 
@@ -108,11 +108,11 @@ Use the `--no-start` option to avoid starting the application before it is confi
 
 Binding occurs automatically if the application manifest contains the correct service instance name. If you are not using a manifest, run the `cf bind-service` command to bind the application manually. For example: 
 
-(optional)`$ cf bind-service <my-app> <my-service-instance-name>`
+(optional)`$ cf bind-service my-app my-service-instance-name`
 
 The binding process generates a binding ID that becomes the Conjur host ID, used as a unique application identity for this application running in this space.
 
-The ID is stored in the `authn_login` string found under the VCAP_SERVICES environment variable. The `authn_login` string has the format `host/<id>`. For example:   
+The ID is stored in the `authn_login` string found under the VCAP_SERVICES environment variable. The `authn_login` string has the format `host/id`. For example:   
   
     `host/0299a19d-7de4-4e98-89f6-372ac7c0521f`
 
