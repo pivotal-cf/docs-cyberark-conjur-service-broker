@@ -10,7 +10,6 @@ This topic describes how to use CyberArk Conjur Service Broker for Pivotal Cloud
 The CyberArk Conjur Service Broker for PCF provides the interface between PCF applications and a Conjur appliance. 
 
  - [Deploy a PCF Application that Accesses Secrets from Conjur](#deploy-application)
- 
  - [Use a Custom Buildpack](#custom-bp)
  
 ###<a id='deploy-application'></a>Deploy a PCF Application that Accesses Secrets from Conjur   
@@ -30,41 +29,89 @@ You can push the same application to multiple spaces. After preparing the applic
 ####<a id="secrets"></a>Step 1: Prepare the Application
 
 The CyberArk Conjur Service Broker for PCF uses the Summon application included in the Conjur Buildpack by default to fetch secrets from the Conjur appliance and inject the values into your application's environment.  
-The secrets, fetched at application startup, are available only to the application process (not to users), and are gone when the process exits.  
-Summon requires a `secrets.yml` file in the application's root folder. 
+
+The secrets, fetched at application startup, are available only to the application process (not to users), and are gone when the process exits.  Summon requires a `secrets.yml` file in the application's root folder. 
 
 If your application uses another method to access secrets, such as Conjur API calls, you do not need a `secrets.yml` file.  
 
   1. Create a file named `secrets.yml`.
  
-  2. Add entries to the file to define the secrets that the application will fetch from the Conjur appliance.
+  2. Add entries to the file to define the secrets that the application will fetch. Secrets to fetch from Conjur are specified with a !<tag> and a pathname indicating the Conjur policy path.  
  
   2. Store the `secrets.yml` file in the root folder of your application. 
+  
+  4. Create Conjur policy that declares the secrets as Conjur variables and, if desired, grants access to them for users.   [A later step](#update-policy) grants access to the PCF application.  
+  
+  5. Load the policy into Conjur under the PCF namespace. For example, the following examples load a policy file named `my-app.yml` into a Conjur namespace named `pcf`. 
+  
+  For Enterprise Conjur (v4): 
+  
+  Add `!include my-app.yml` to an existing PCF policy file (`pcf.yml` in the example below) and reload the policy as follows:  
+  
+  ```
+  $ conjur policy load --as-group security_admin pcf.yml
+
+  ```
+  If the policy file contains only PCF-related policy, you could also load with an admin group that is defined within the PCF policy, as follows: 
+  
+  ```
+  $ conjur policy load --as-group pcf-admin-group pcf.yml
+  ```
+  
+  
+  For Open Source Conjur (v5): 
+  
+  ```
+  $ conjur policy load pcf my-app.yml
+  ``` 
+
+##### Example: secrets.yml
 
 The following example of a `secrets.yml` file shows several types of allowed entries.  
  
-```
-AWS_ACCESS_KEY_ID: !var aws/$environment/iam/user/robot/access_key_id
-AWS_SECRET_ACCESS_KEY: !var aws/$environment/iam/user/robot/secret_access_key
-AWS_REGION: us-east-1
-SSL_CERT: !var:file ssl/certs/private
-```
+ ```
+DB_USERNAME: !var pcf/my-app/db/username 
+DB_PASSWORD: !var pcf/my-app/db/password
+REGION: us-east-1
+SSL_CERT: !var:file pcf/ssl/certs/private
+ ```
 
-Lines 1 and 2 specify variables with pathnames containing the secret.
+
+Lines 1 and 2 specify variables with pathnames containing a secret. In this case, assume that a policy with an id of `my-app` was loaded into the pcf policy namespace. The pathnames are Conjur policy paths, using the PCF namespace as the first component, followed by other ids in the policy hierarchy. 
 Line 3 specifies a literal string for the secret. 
-Line 4 specifies a variable that is a file containing the secret.
+Line 4 specifies a variable that is a file containing the secret. The contents of the file would also be retrieved from Conjur.
 
-In the context of a PCF environment, the above example could produce the following results: 
+In the context of a PCF environment, the above example could produce the following results, with the first two values retrieved from Conjur: 
  
 ```
-AWS_ACCESS_KEY_ID: AKIAI44QH8DHBEXAMPLE
-AWS_SECRET_ACCESS_KEY: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
-AWS_REGION: us-east-1
-SSL_CERT: /tmp/ssl-cert.pem
+DB_USERNAME: AKIAI44QH8DHBEXAMPLE
+DB_PASSWORD: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
+REGION: us-east-1
+SSL_CERT: pcf/tmp/ssl-cert.pem
 ```
  
-For more information about syntax and options for a `secrets.yml` file, see the secrets.yml section [in the Summon documentation](https://cyberark.github.io/summon/). 
+For more information about syntax and options for a `secrets.yml` file, see the secrets.yml section in the [Summon documentation](https://cyberark.github.io/summon/). 
 
+#####Example: my-app.yml
+
+The following example shows a Conjur application policy declaring two secrets as variables for Conjur to manage and a group with access to those secrets. 
+
+```
+- !policy
+  id: my-app
+  body:
+    - &variables
+      - !variable db/username
+      - !variable db/password
+
+    - !group secrets-users
+
+    # secrets-users can read and execute
+    - !permit
+      resource: *variables
+      privileges: [ read, execute ]
+      role: !group secrets-users
+```
 
 ####<a id="create-service"></a>Step 2: Create a Service Instance  
 
@@ -112,38 +159,41 @@ Binding occurs automatically if the application manifest contains the correct se
 
 The binding process generates a binding ID that becomes the Conjur host ID, used as a unique application identity for this application running in this space.
 
-The ID is stored in the `authn_login` string found under the VCAP_SERVICES environment variable. The `authn_login` string has the format `host/id`. For example:   
+The ID is stored in the `authn_login` string found under the VCAP_SERVICES environment variable. The `authn_login` string has the format `host/namespace/binding_id`. For example:   
   
-    `host/0299a19d-7de4-4e98-89f6-372ac7c0521f`
+    `host/pcf/0299a19d-7de4-4e98-89f6-372ac7c0521f`
 
-The following command extracts just the ID value that you need. 
+The following command extracts just the binding ID value that you need. 
  
   ```
-  $ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g'
+APP_HOST_NAME=$(cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g; s/,$//g')
   ```  
 
-####<a id="update-policy"></a>Step 6 - Update Conjur Policy Grants for this Application      
+####<a id="update-policy"></a>Step 6: Update Conjur Policy Grants for this Application      
 
 The binding ID obtained in the previous step becomes the host ID to use in Conjur policies.  
 
  1. Log into the Conjur appliance.   
  
- 2. Update Conjur policy to add the new host ID with read and execute privilege on a set of secrets. 
+ 2. Update policy to grant read and execute privileges to the new host ID on a set of secrets. 
    
-   For example, the policy snippet below adds the new host to an existing group.  
+   For example, the following policy adds the new host to the existing secrets-users group.  You can save these lines in a separate file, such as `entitlements.yml`.  
   
    ``` 
    - !grant
-     role: !group /path/to/some/app/secrets-users
+     role: !group my-app/secrets-users
      member: !host 0299a19d-7de4-4e98-89f6-372ac7c0521f
    ```
    
- If you save the policy to a file named `entitlements.yml`, you can load the policy into Conjur using the Conjur CLI. For example:  
+   
+ 3. Load the policy change. 
+ 
+    The following command loads the new policy file into a namespace called `pcf`:    
  
   ```
-  $ conjur policy load my-policy /path/to/entitlements.yml
+  $ conjur policy load pcf entitlements.yml
   ```
-
+ In Enterprise Conjur (v4), you could also choose to use an `!include` statement in the existing PCF policy. 
 
 ####<a id="restage"></a>Step 7: Restage the Application 
   
@@ -160,12 +210,4 @@ On application startup, the service loads the secrets that are defined in the ap
 
 The CyberArk Conjur Service Broker for PCF uses the Conjur Buildpack to inject secrets into session environment variables on application startup. The Conjur Buildpack is a decorator buildpack and will not be properly invoked if the application requires a custom buildpack.
 
-If your application requires a custom buildpack in the application manifest or in the `cf push` command, see the [CyberArk Conjur buildpack documentation](https://github.com/cyberark/cloudfoundry-conjur-buildpack/blob/master/README.md). That documentation includes steps for configuring an application to successfully retrieve secrets from Conjur while using a custom buildpack.
-   
-
-
-
- 
-
-
-
+If you need to specify a buildpack in your application's manifest or in the `cf push` command, see the [CyberArk Conjur buildpack documentation](https://github.com/cyberark/cloudfoundry-conjur-buildpack/blob/master/README.md) for instructions on manually implementing the functionality included in the Conjur Buildpack.
