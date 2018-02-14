@@ -42,17 +42,28 @@ This tab configures communication between the Service Broker and a Conjur applia
 ![Conjur Service Broker Configuration tab](service_broker_config_screen.png)
 
   * **Conjur Account**: The organization account assigned during Conjur appliance installation. If you are using a hosted Conjur instance for a proof of concept, the account is typically your email address.
+  
   * **Conjur Appliance URL**: The URL of the Conjur appliance that you are connecting to.
+  
   * **Conjur Login**: The username of a Conjur user. 
   
-The user ID must have the ability to update and create privileges on the root Conjur policy. 
-This login is only used to add and remove hosts from the Conjur policy files as your applications are deployed to or removed from PCF. 
+  The user  must have `create` and `update`  privileges on the Conjur policy on the dedicated PCF policy ID you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated PCF policy namespace, this login user must have `create` and `update` privileges on the Conjur root policy. 
+  
+  This login is only used by the Service Broker to add and remove hosts from the Conjur policy files as your applications are deployed to or removed from PCF. 
 
-  * **Conjur API Key**: The API key of the Conjur user whose username you have provided in the **Conjur Login** field. 
+  * **Conjur API Key**: The API key of the Conjur user whose username you provided in the **Conjur Login** field. 
 
   If the user's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.        
 
 <p class='note'><strong>Note:</strong> The Conjur user credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
+
+  * **Conjur Policy**: The policy namespace you created for PCF. Leave blank to default to the root policy (not recommended). 
+  
+  * **Conjur Version**: Defaults to 5. Select 4 for Enterprise Conjur. Select 5 for Open Source Conjur (including an evaluation Hosted Conjur).
+  
+  * **Conjur Certificate**: Required for Conjur Enterprise only. Copy and paste the contents of the .pem file that was created by the `conjur init` command when the Conjur appliance was configured. Be sure to include the Begin and End lines in the certificate.  
+  
+  The .pem file is located in the root folder where Conjur was created. The file name is `conjur-account.pem`, where *account* is the account name provided for  the  Conjur instance.
 
 ###<a id='config-buildpack'></a>Buildpack Setttings  
 
