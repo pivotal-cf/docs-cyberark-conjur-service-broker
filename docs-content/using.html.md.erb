@@ -20,7 +20,7 @@ You can push the same application to multiple spaces. After preparing the applic
 
  - [Step 1: Prepare the Application](#secrets)
  - [Step 2: Create a Service Instance](#create-service)
- - [Step 3: Edit Manifest File](#manifest)
+ - [Step 3: Edit Manifest File](#edit-manifest)
  - [Step 4: Push Application to PCF Space](#push-app)
  - [Step 5: Obtain the Binding ID](#bind)
  - [Step 6: Update the Conjur Policy File with the Binding ID](#update-policy)
@@ -116,10 +116,9 @@ The following example shows a Conjur application policy declaring two secrets as
 ####<a id="create-service"></a>Step 2: Create a Service Instance  
 
 In the PCF space where you intend to deploy the application, create a service instance.   
- 
-```
-$ cf create-service cyberark-conjur community my-service-instance-name 
-``` 
+
+<pre class='term'>$ cf create-service cyberark-conjur community <my-service-instance-name></pre>
+
 In the command above:
 
 * The service-name is `cyberark-conjur`. 
@@ -155,7 +154,7 @@ Use the `--no-start` option to avoid starting the application before it is confi
 
 Binding occurs automatically if the application manifest contains the correct service instance name. If you are not using a manifest, run the `cf bind-service` command to bind the application manually. For example: 
 
-(optional)`$ cf bind-service my-app my-service-instance-name`
+<pre class='term'>$ cf bind-service <my-app> <my-service-instance-name></pre>
 
 The binding process generates a binding ID that becomes the Conjur host ID, used as a unique application identity for this application running in this space.
 
@@ -164,10 +163,9 @@ The ID is stored in the `authn_login` string found under the VCAP_SERVICES envir
     `host/pcf/0299a19d-7de4-4e98-89f6-372ac7c0521f`
 
 The following command extracts just the binding ID value that you need. 
- 
-  ```
-APP_HOST_NAME=$(cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g; s/,$//g')
-  ```  
+
+<pre class='term'>$ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g'</pre>
+
 
 ####<a id="update-policy"></a>Step 6: Update Conjur Policy Grants for this Application      
 
@@ -177,31 +175,24 @@ The binding ID obtained in the previous step becomes the host ID to use in Conju
  
  2. Update policy to grant read and execute privileges to the new host ID on a set of secrets. 
    
-   For example, the following policy adds the new host to the existing secrets-users group.  You can save these lines in a separate file, such as `entitlements.yml`.  
-  
+   For example, the following policy adds the new host to the existing secrets-users group.  You can save these lines in a separate file, such as `entitlements.yml`.    
    ``` 
    - !grant
      role: !group my-app/secrets-users
      member: !host 0299a19d-7de4-4e98-89f6-372ac7c0521f
-   ```
-   
-   
- 3. Load the policy change. 
+   ```   
+3. Load the policy change:
+  
+ The following command loads the new policy file into a namespace called `pcf`:    
  
-    The following command loads the new policy file into a namespace called `pcf`:    
- 
-  ```
-  $ conjur policy load pcf entitlements.yml
-  ```
- In Enterprise Conjur (v4), you could also choose to use an `!include` statement in the existing PCF policy. 
+<pre class='term'>$ conjur policy load my-policy /path/to/entitlements.yml</pre>
+
 
 ####<a id="restage"></a>Step 7: Restage the Application 
   
 Start or restage the application. 
 
-```
-$ cf restage my-app
-```
+<pre class='term'>$ cf restage my-app</pre>
 
 On application startup, the service loads the secrets that are defined in the application's `secrets.yml` into the PCF environment. 
 

@@ -55,7 +55,7 @@ This tab configures communication between the Service Broker and a Conjur applia
 
   If the user's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.        
 
-<p class="note"><strong>Note:</strong> The Conjur user credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
+<p class='note'><strong>Note:</strong> The Conjur user credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
 
   * **Conjur Policy**: The policy namespace you created for PCF. Leave blank to default to the root policy (not recommended). 
   
@@ -67,13 +67,13 @@ This tab configures communication between the Service Broker and a Conjur applia
 
 ###<a id='config-buildpack'></a>Buildpack Setttings  
 
-Do not change the installed sequence. **meta\_buildpack** must install first, and **conjur\_buildpack** must install second. 
+Do not change the installed sequence. `meta\_buildpack` must install first, and `conjur\_buildpack` must install second. 
 
 ###<a id='config-service-access'></a>Service Access
 
 If **Enable global access to plans of service Conjur** is checked, the Conjur service is available to all PCF users, across all orgs and spaces.   
    
-To configure more precise access control, uncheck this option and use **cf enable-service-access** to specify which orgs and spaces can access the Conjur service.    
+To configure more precise access control, uncheck this option and use `cf enable-service-access` to specify which orgs and spaces can access the Conjur service.    
 
 ###<a id='config-errands'></a>Errands
 
