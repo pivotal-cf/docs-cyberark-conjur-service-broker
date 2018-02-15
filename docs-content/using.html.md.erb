@@ -117,7 +117,8 @@ The following example shows a Conjur application policy declaring two secrets as
 
 In the PCF space where you intend to deploy the application, create a service instance.   
 
-<pre class='term'>$ cf create-service cyberark-conjur community <my-service-instance-name></pre>
+
+<pre class='term'>$ cf create-service cyberark-conjur community my-service-instance-name</pre>
 
 In the command above:
 
@@ -154,7 +155,8 @@ Use the `--no-start` option to avoid starting the application before it is confi
 
 Binding occurs automatically if the application manifest contains the correct service instance name. If you are not using a manifest, run the `cf bind-service` command to bind the application manually. For example: 
 
-<pre class='term'>$ cf bind-service <my-app> <my-service-instance-name></pre>
+(optional) <pre class='term'>$ cf bind-service my-app my-service-instance-name</pre>
+
 
 The binding process generates a binding ID that becomes the Conjur host ID, used as a unique application identity for this application running in this space.
 
@@ -164,7 +166,8 @@ The ID is stored in the `authn_login` string found under the VCAP_SERVICES envir
 
 The following command extracts just the binding ID value that you need. 
 
-<pre class='term'>$ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g'</pre>
+
+<pre class='term'>$ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g; s/,$//g'</pre>
 
 
 ####<a id="update-policy"></a>Step 6: Update Conjur Policy Grants for this Application      
@@ -185,9 +188,11 @@ The binding ID obtained in the previous step becomes the host ID to use in Conju
   
  The following command loads the new policy file into a namespace called `pcf`:    
  
-<pre class='term'>$ conjur policy load my-policy /path/to/entitlements.yml</pre>
+<pre class='term'>$ conjur policy load pcf entitlements.yml</pre>
 
+ In Enterprise Conjur (v4), you could also choose to use an `!include` statement in the existing PCF policy.
 
+    
 ####<a id="restage"></a>Step 7: Restage the Application 
   
 Start or restage the application. 
