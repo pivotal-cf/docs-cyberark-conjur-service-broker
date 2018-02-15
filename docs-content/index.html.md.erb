@@ -3,8 +3,7 @@ title: CyberArk Conjur Service Broker for PCF (Beta)
 owner: Partners
 ---
 
-<p class="note warning"><strong>WARNING:</strong> The CyberArk Conjur Service Broker for PCF tile is currently in beta and is intended for evaluation and test purposes only.
-Do not use this product in a PCF production environment.</p>
+<p class='note warning'><strong>WARNING:</strong> The CyberArk Conjur Service Broker for PCF tile is currently in beta and is intended for evaluation and test purposes only. Do not use this product in a PCF production environment.</p>
 
 This documentation describes the CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF). This service broker provides Conjur machine identity management and authentication, policy-based authorization, and other Conjur services to your PCF applications and microservices.
 
@@ -43,7 +42,7 @@ The following table provides version and version-support information about Cyber
     </tr>
     <tr>
         <td>Release date</td>
-        <td>February 15, 2018</td>
+        <td>February 14, 2018</td>
     </tr>
     <tr>
         <td>Software component version</td>
@@ -75,13 +74,6 @@ CyberArk Conjur Service Broker for PCF has the following requirements:
   * Open Source Conjur (v5.x)
       * Hosted Conjur is a hosted version of Open Source Conjur. You can quickly get a hosted Conjur instance running for evaluation purposes. Visit the [hosted Conjur page](https://www.conjur.org/get-started/try-conjur.html) to sign up.
 
-
-
-
-
-
-
-
 + To configure the PCF tile, you must know the following information about your Conjur appliance:
   * Conjur Account, which is specified when the Conjur appliance is created and configured. For hosted Conjur, the account is usually an email address that you specify on the web form.
   * URL to the Conjur appliance.
@@ -95,8 +87,6 @@ Enterprise Conjur (v4) has the following additional requirements:
   *  The tile installation requires a copy and paste of the x509 certificate that was created when Conjur was initiated. The certificate is stored in a `.pem` file that was created by the `conjur init` command. The default path is `/conjur_install_directory/conjur-account.pem`.
 
   *  The Service Broker requires a Conjur Host Factory to use when adding host identities. The examples below in  [Recommendations](#recommendations) include Host Factory definitions. If a Host Factory is not properly defined, a health check near the end of tile installation reports the condition, and the tile installation fails.
-
-
 
 
 ## <a id="recommendations"></a>Recommendations
@@ -160,10 +150,6 @@ To create a dedicated PCF namespace:
    ```
 
 
-
-
-
-
 3. Load the policy into Conjur under the root policy, as follows:
 
    For Conjur Enterprise (v4):
@@ -207,8 +193,6 @@ If you decide to use the default root namespace for PCF, consider the following:
         id: apps
         layers: [ !layer apps ]
  ```
-
-
 
 
 ## <a id="limitations"></a>Limitations
