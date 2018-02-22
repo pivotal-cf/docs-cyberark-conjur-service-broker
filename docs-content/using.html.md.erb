@@ -175,7 +175,7 @@ The binding ID obtained in the previous step becomes the host ID to use in Conju
  
  2. Update policy to grant read and execute privileges to the new host ID on a set of secrets. 
    
-   For example, the following policy adds the new host to the existing secrets-users group.  You can save these lines in a separate file, such as `entitlements.yml`.    
+   For example, the following policy adds the new host to the existing secrets-users group. You can save these lines in a separate file, such as `entitlements.yml`.    
    ``` 
    - !grant
      role: !group my-app/secrets-users
@@ -186,7 +186,7 @@ The binding ID obtained in the previous step becomes the host ID to use in Conju
  The following command loads the new policy file into a namespace called `pcf`:    
 <pre class='term'>$ conjur policy load pcf entitlements.yml</pre>
 
- In Enterprise Conjur (v4), you could also choose to use an `!include` statement in the existing PCF policy.
+ In Enterprise Conjur v4, you could also choose to use an `!include` statement in the existing PCF policy.
 
 ####<a id="restage"></a>Step 7: Restage the Application 
   
