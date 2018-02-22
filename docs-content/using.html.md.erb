@@ -38,7 +38,7 @@ If your application uses another method to access secrets, such as Conjur API ca
 
   2. Add entries to the file to define the secrets that the application will fetch. Secrets to fetch from Conjur are specified with a `!<tag>` and a pathname indicating the Conjur policy path.
 
-  2. Store the `secrets.yml` file in the root folder of your application.
+  3. Store the `secrets.yml` file in the root folder of your application.
 
   4. If the secrets that your application needs are not already available in Conjur policy, you can create a policy file `my-app.yml` that will add the secrets to policy. The `my-app` Policy can also create a Group that is entitled to fetch the secret values; the application Host can be added to that Group in [a later step](#update-policy) to grant it access to the secret values.
 
