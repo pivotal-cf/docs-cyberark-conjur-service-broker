@@ -116,14 +116,13 @@ When creating the dedicated Conjur policy for PCF, consider the following:
 
  * The Service Broker requires `create` and `update` privileges on the policy to add and remove host identities. Members of the group that owns the policy have those privileges.
  * PCF DevOps personnel need access to Conjur to declare application secrets and grant privileges to the applications to access those secrets.
- * For Conjur Enterprise (v4), a Host Factory is required. Both the ID of the Layer and the Host Factory must use the syntax `namespace-apps`, where `apps` is a constant. For example, `pcf-apps` is used in the policy example shown below.
+ * For Conjur Enterprise (v4), a Host Factory is required. Both the ID of the Layer and the Host Factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf-apps` is used in the policy example shown below where the dedicated policy for PCF is called `pcf`.
 
 
 To create a dedicated Conjur policy for PCF:
 
 Step 1: Create a policy using the following example as a guide.  Save the policy as a `.yml` file.
 
- Example policy file that creates a dedicated Conjur policy `pcf` for PCF:
 
    ```
   - !host
@@ -137,14 +136,13 @@ Step 1: Create a policy using the following example as a guide.  Save the policy
     member: !host pcf-service-broker
 
   - !policy
-    id: pcf                          /* Namespace name
-                                     /* It does not have to be pcf
-    owner: !group pcf-admin-group    /* Owners have complete privileges
+    id: pcf                          /* Policy does not have to be called pcf
+    owner: !group pcf-admin-group    /* Owners have complete privileges on the policy
     body:                            /* The body and following layer are
       - !layer pcf-apps              /* required for Conjur Enterprise v4;
                                      /* optional otherwise.
                                      /* Layer name and host-factory name
-                                     /* must be namespace-apps
+                                     /* must be [policy-id]-apps
 
       - !host-factory
         id: pcf-apps

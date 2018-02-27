@@ -159,13 +159,15 @@ Binding occurs automatically if the application manifest contains the correct se
 
 The binding process generates a binding ID that becomes the Conjur Host ID, used as a unique application identity for this application running in this space.
 
-The ID is stored in the `authn_login` string found under the VCAP_SERVICES environment variable. The `authn_login` string has the format `host/namespace/binding_id`. For example:
+The ID is stored in the `authn_login` string found under the VCAP_SERVICES environment variable. The `authn_login` string has the format `host/global-policy-id/binding_id`. For example:
 
     `host/pcf/0299a19d-7de4-4e98-89f6-372ac7c0521f`
 
+would be the value of `authn_login` if the tile was configured to add hosts to the `pcf` Conjur Policy.
+
 The following command extracts just the binding ID value that you need.
 
-<pre class='term'>$ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host\///g; s/"//g; s/,$//g'</pre>
+<pre class='term'>$ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host.*\///g; s/"//g; s/,$//g'</pre>
 
 
 ####<a id="update-policy"></a>Step 6: Update Conjur Policy Grants for this Application
@@ -184,7 +186,7 @@ The binding ID obtained in the previous step becomes the Host ID to use in Conju
    ```
 3. Load the policy change:
 
- The following command loads the new policy file into a namespace called `pcf`:
+ The following command loads the grant in `entitlements.yml` into the `pcf` Conjur policy:
 <pre class='term'>$ conjur policy load pcf entitlements.yml</pre>
 
  In Enterprise Conjur (v4), you could also choose to use an `!include` statement in the existing PCF Policy.

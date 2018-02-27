@@ -41,15 +41,14 @@ This tab configures communication between the Service Broker and a Conjur applia
 
 ![Conjur Service Broker Configuration tab](service_broker_config_screen.png)
 
-*Note*: in the instructions below, you are asked to provide the ID for a Conjur Host or Policy.
-It is worth noting that by convention, Conjur IDs are path-based.
-For example: a `pcf` Platform loaded into a `prod/platforms` policy namespace wuold have ID `prod/platforms/pcf`.
+*Note*: in the instructions below, when a global identity is requested, please supply the ID of the Host or Policy prefixed by the namespace that the Host or Policy belongs to.
+For example: a `pcf` policy loaded into a `prod/platforms` policy namespace would have global ID `prod/platforms/pcf`.
 
   * **Conjur Account**: The organization account assigned during Conjur appliance installation. If you are using a hosted Conjur instance for a proof of concept, the account is typically your email address.
 
   * **Conjur Appliance URL**: The URL of the Conjur appliance that you are connecting to.
 
-  * **Conjur Login**: The identity of a Conjur Host.
+  * **Conjur Login**: The global identity of a Conjur Host.
 
   The Host must have `create` and `update` privileges on the dedicated Conjur policy for PCF that you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated Conjur policy for PCF, this login Host must have `create` and `update` privileges on the Conjur root policy.
 
@@ -63,7 +62,7 @@ For example: a `pcf` Platform loaded into a `prod/platforms` policy namespace wu
 
 <p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
 
-  * **PCF Conjur Policy Namespace**: The Conjur Policy ID of the dedicated Conjur policy for PCF that you created. Leave blank to default to the root policy (not recommended).
+  * **PCF Conjur Policy Namespace**: The global Conjur Policy ID of the dedicated Conjur policy for PCF that you created. Leave blank to default to the root policy (not recommended).
 
   * **Conjur Version**: Defaults to 5. Select 4 for Enterprise Conjur. Select 5 for Open Source Conjur (including an evaluation Hosted Conjur).
 
