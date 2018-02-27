@@ -42,17 +42,17 @@ If your application uses another method to access secrets, such as Conjur API ca
 
   4. If the secrets that your application needs are not already available in Conjur policy, you can create a policy file `my-app.yml` that will add the secrets to policy. The `my-app` Policy can also create a Group that is entitled to fetch the secret values; the application Host can be added to that Group in [a later step](#update-policy) to grant it access to the secret values.
 
-  5. If you created a `my-app.yml` policy file, load it into Conjur under the PCF Policy. For example, if your PCF Policy is called `pcf`:
+  5. If you created a `my-app.yml` policy file, load it into Conjur under the dedicated Conjur policy for PCF. For example, if your dedicated Conjur policy for PCF is called `pcf`:
 
   For Enterprise Conjur (v4):
 
-  Add `!include my-app.yml` under the PCF Policy (defined in `pcf.yml` in the example below) and reload the policy as follows:
+  Add `!include my-app.yml` to the body of the `pcf` Policy (defined in `pcf.yml` in the example below) and reload the policy as follows:
 
   ```
   $ conjur policy load --as-group security_admin pcf.yml
 
   ```
-  If `pcf.yml` contains only the PCF Policy, and if we have set that Policy so that it is owned by the `pcf-admin-group`, you could also reload by calling:
+  If `pcf.yml` contains only the `pcf` Policy, and if we have set that Policy so that it is owned by the `pcf-admin-group` Group, you could also reload by calling:
 
   ```
   $ conjur policy load --as-group pcf-admin-group pcf.yml

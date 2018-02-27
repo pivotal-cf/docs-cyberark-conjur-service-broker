@@ -41,17 +41,21 @@ This tab configures communication between the Service Broker and a Conjur applia
 
 ![Conjur Service Broker Configuration tab](service_broker_config_screen.png)
 
+*Note*: in the instructions below, you are asked to provide the ID for a Conjur Host or Policy.
+It is worth noting that by convention, Conjur IDs are path-based.
+For example: a `pcf` Platform loaded into a `prod/platforms` policy namespace wuold have ID `prod/platforms/pcf`.
+
   * **Conjur Account**: The organization account assigned during Conjur appliance installation. If you are using a hosted Conjur instance for a proof of concept, the account is typically your email address.
 
   * **Conjur Appliance URL**: The URL of the Conjur appliance that you are connecting to.
 
   * **Conjur Login**: The identity of a Conjur Host.
 
-  The Host must have `create` and `update` privileges on the Conjur Policy that you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated PCF Policy, this login Host must have `create` and `update` privileges on the Conjur root policy.
+  The Host must have `create` and `update` privileges on the dedicated Conjur policy for PCF that you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated Conjur policy for PCF, this login Host must have `create` and `update` privileges on the Conjur root policy.
 
   This login is only used by the Service Broker to add and remove Hosts from Conjur policy as your applications are deployed to or removed from PCF.
 
-  This entry should be of the form `host/host-id`, where `host-id` is the ID value you gave to the Host in Conjur policy. The `host/` prefix indicates to the Conjur authenticator that these credentials belong to a Host, and not a User.
+  This entry should be of the form `host/host-id`, where `host-id` is the Conjur Host ID. The `host/` prefix indicates to the Conjur authenticator that these credentials belong to a Host, and not a User.
 
   * **Conjur API Key**: The API key of the Conjur Host whose identity you provided in the **Conjur Login** field.
 
@@ -59,7 +63,7 @@ This tab configures communication between the Service Broker and a Conjur applia
 
 <p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
 
-  * **PCF Conjur Policy Namespace**: The Conjur Policy you created for PCF. Leave blank to default to the root policy (not recommended).
+  * **PCF Conjur Policy Namespace**: The Conjur Policy ID of the dedicated Conjur policy for PCF that you created. Leave blank to default to the root policy (not recommended).
 
   * **Conjur Version**: Defaults to 5. Select 4 for Enterprise Conjur. Select 5 for Open Source Conjur (including an evaluation Hosted Conjur).
 
