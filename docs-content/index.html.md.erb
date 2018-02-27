@@ -119,9 +119,9 @@ When creating the dedicated Conjur policy for PCF, consider the following:
  * For Conjur Enterprise (v4), a Host Factory is required. Both the ID of the Layer and the Host Factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf-apps` is used in the policy example shown below where the dedicated policy for PCF is called `pcf`.
 
 
-To create a dedicated Conjur policy for PCF:
+#### To create a dedicated Conjur policy for PCF:
 
-Step 1: Create a policy using the following example as a guide.  Save the policy as a `.yml` file.
+##### Step 1: Create a policy using the following example as a guide.  Save the policy as a `.yml` file.
 
 
    ```
@@ -136,7 +136,7 @@ Step 1: Create a policy using the following example as a guide.  Save the policy
     member: !host pcf-service-broker
 
   - !policy
-    id: pcf                          /* Policy does not have to be called pcf
+    id: pcf                          /* Policy ID does not have to be pcf
     owner: !group pcf-admin-group    /* Owners have complete privileges on the policy
     body:                            /* The body and following layer are
       - !layer pcf-apps              /* required for Conjur Enterprise v4;
@@ -150,12 +150,15 @@ Step 1: Create a policy using the following example as a guide.  Save the policy
    ```
 
    This policy file creates a `host/pcf-service-broker` Host that can be used as the `CONJUR_AUTHN_LOGIN` role in the Tile configuration.
+
    The `pcf-service-broker` Host is a member of the `pcf-admin-group` Group, which owns the `pcf` Policy, so it has `create` and `update` privileges on that Policy as required.
+
    The `pcf` Policy has a `pcf-apps` Layer and corresponding Host-Factory; if using Conjur version 4, application Hosts will be added to the `pcf-apps` Layer via the `pcf-apps` Host Factory when the application is bound to a Conjur service instance.
+
    Additional policies for individual applications can be appended to this file or loaded in separate `.yml` files as needed.
 
 
-Step 2. Load the policy into Conjur as follows (in this example, we are loading it into the root policy):
+##### Step 2. Load the policy into Conjur as follows (in this example, we are loading it into the root policy):
 
    For Conjur Enterprise (v4):
 
@@ -169,9 +172,9 @@ Step 2. Load the policy into Conjur as follows (in this example, we are loading 
    $ conjur policy load root your-pcf-policy-file.yml
    ```
 
-Step 3. In the CyberArk Conjur Service Broker for PCF tile configuration:
-  *  For **PCF Conjur Policy Namespace**, use the full path to the dedicated Conjur policy for PCF (`pcf` in the above example)
-  *  For **Conjur Login**, use a Conjur Host who is a member of the Group that owns the PCF Policy (`host/pcf-service-broker` in the example above).
+##### Step 3. In the CyberArk Conjur Service Broker for PCF tile configuration:
+  *  For **PCF Conjur Policy Namespace**, use the fully-qualified ID of the dedicated Conjur policy for PCF (`pcf` in the above example)
+  *  For **Conjur Login**, use a Conjur Host who is a member of the Conjur Group that owns the PCF Policy (`host/pcf-service-broker` in the example above).
   *  For **Conjur API Key**, use that Host's API key. The admin who created the role can retrieve the value with this command:
 
      ```

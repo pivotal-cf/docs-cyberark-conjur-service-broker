@@ -47,17 +47,17 @@ This tab configures communication between the Service Broker and a Conjur applia
 
   * **Conjur Login**: The fully-qualified ID of a Conjur Host.
 
-  The Host must have `create` and `update` privileges on the dedicated Conjur policy for PCF that you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated Conjur policy for PCF, this login Host must have `create` and `update` privileges on the Conjur root policy.
+    The Host must have `create` and `update` privileges on the dedicated Conjur policy for PCF that you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated Conjur policy for PCF, this login Host must have `create` and `update` privileges on the Conjur root policy.
 
-  This login is only used by the Service Broker to add and remove Hosts from Conjur policy as your applications are deployed to or removed from PCF.
+    This login is only used by the Service Broker to add and remove Hosts from Conjur policy as your applications are deployed to or removed from PCF.
 
-  This entry should be of the form `host/host-id`, where `host-id` is the fully-qualified Conjur Host ID. The `host/` prefix indicates to the Conjur authenticator that these credentials belong to a Host, and not a User.
+    This entry should be of the form `host/host-id`, where `host-id` is the fully-qualified Conjur Host ID. The `host/` prefix indicates to the Conjur authenticator that these credentials belong to a Host, and not a User.
 
   * **Conjur API Key**: The API key of the Conjur Host whose identity you provided in the **Conjur Login** field.
 
-  If the Host's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.
+    If the Host's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.
 
-<p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
+    <p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
 
   * **PCF Conjur Policy Namespace**: The fully-qualified Conjur Policy ID of the dedicated Conjur policy for PCF that you created. Leave blank to default to the root policy (not recommended).
 
@@ -65,7 +65,7 @@ This tab configures communication between the Service Broker and a Conjur applia
 
   * **Conjur Certificate**: Required for Conjur Enterprise only. Copy and paste the contents of the .pem file that was created by the `conjur init` command when the Conjur appliance was configured. Be sure to include the Begin and End lines in the certificate.
 
-  The .pem file is located in the root folder where Conjur was created. The file name is `conjur-account.pem`, where *account* is the account name provided for the Conjur instance.
+    The .pem file is located in the root folder where Conjur was created. The file name is `conjur-account.pem`, where *account* is the account name provided for the Conjur instance.
 
 ###<a id='config-buildpack'></a>Buildpack Setttings
 
