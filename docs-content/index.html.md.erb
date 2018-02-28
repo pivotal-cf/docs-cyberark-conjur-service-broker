@@ -95,15 +95,15 @@ Enterprise Conjur (v4) has the following additional requirements:
 
  CyberArk strongly recommends that you create a Conjur policy dedicated to PCF.  Create this policy before installing the PCF tile.
 
-  The syntax for defining a Conjur Policy with ID `my-pcf` is as follows:
+  The syntax for defining a Conjur Policy with ID `pcf` is as follows:
 
 ```
 - !policy
-  id: my-pcf
+  id: pcf
 ```
 
   This can be loaded into the root Policy or any other Conjur policy you would like. Host identities for PCF-deployed applications
-  will be loaded into the `my-pcf` Conjur policy when the applications are bound to a Conjur service instance.
+  will be loaded into the `pcf` Conjur policy when the applications are bound to a Conjur service instance.
 
 A dedicated Conjur policy for PCF supports least privilege principles in the following ways:
 
