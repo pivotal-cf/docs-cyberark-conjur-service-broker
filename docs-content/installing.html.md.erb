@@ -2,7 +2,7 @@
 title: Installing and Configuring CyberArk Conjur Service Broker for PCF
 owner: Partners
 ---
- 
+
 
 This topic describes how to install and configure CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF).
 
@@ -10,85 +10,85 @@ This topic describes how to install and configure CyberArk Conjur Service Broker
 
 1. Download the CyberArk Conjur Service Broker for PCF product file from <a href = "https://network.pivotal.io">Pivotal Network</a>.
 
-1. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file. 
+1. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file.
 
-1. Under the **Import a Product** button, click **+** next to the version number of CyberArk Conjur Service Broker for PCF. 
+1. Under the **Import a Product** button, click **+** next to the version number of CyberArk Conjur Service Broker for PCF.
 This adds the tile to your staging area.
 
 1. Click the newly added **CyberArk Conjur Service Broker for PCF** tile.
 
-1. Click the **Settings** tab.  
+1. Click the **Settings** tab.
 
-1. Configure the side tabs. The tabs with orange circles require configuration. The others are optional.           
+1. Configure the side tabs. The tabs with orange circles require configuration. The others are optional.
   * [Assign AZs and Networks](#assign-az)
-  * [Service Broker Configuration](#config-service-broker)  
+  * [Service Broker Configuration](#config-service-broker)
   * [Service Access](#config-service-access)
   * [Stemcell](#config-stemcell)
 
 1. Click **Save**.
 
 1. Return to the Ops Manager Installation Dashboard and click **Apply changes** to apply the configuration changes and complete the installation of the CyberArk Conjur Service Broker for PCF tile.
- 
-1. Use `cf marketplace` to verify availability of the community service named `cyberark-conjur`.  
+
+1. Use `cf marketplace` to verify availability of the community service named `cyberark-conjur`.
 
 ###<a id='assign-az'></a>Assign AZs and Networks
 
-Choose appropriate values to configure where to deploy CyberArk Conjur Service Broker for PCF.    
+Choose appropriate values to configure where to deploy CyberArk Conjur Service Broker for PCF.
 
-###<a id='config-service-broker'></a>Service Broker Configuration  
+###<a id='config-service-broker'></a>Service Broker Configuration
 
-This tab configures communication between the Service Broker and a Conjur appliance. 
+This tab configures communication between the Service Broker and a Conjur appliance.
 
 ![Conjur Service Broker Configuration tab](service_broker_config_screen.png)
 
   * **Conjur Account**: The organization account assigned during Conjur appliance installation. If you are using a hosted Conjur instance for a proof of concept, the account is typically your email address.
-  
+
   * **Conjur Appliance URL**: The URL of the Conjur appliance that you are connecting to.
-  
-  * **Conjur Login**: The username of a Conjur user. 
-  
-  The user  must have `create` and `update`  privileges on the Conjur policy on the dedicated PCF policy ID you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated PCF policy namespace, this login user must have `create` and `update` privileges on the Conjur root policy. 
-  
-  This login is only used by the Service Broker to add and remove hosts from the Conjur policy files as your applications are deployed to or removed from PCF. 
 
-  * **Conjur API Key**: The API key of the Conjur user whose username you provided in the **Conjur Login** field. 
+  * **Conjur Login**: The fully-qualified ID of a Conjur Host.
 
-  If the user's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.        
+    The Host must have `create` and `update` privileges on the dedicated Conjur policy for PCF that you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated Conjur policy for PCF, this login Host must have `create` and `update` privileges on the Conjur root policy.
 
-<p class='note'><strong>Note:</strong> The Conjur user credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
+    This login is only used by the Service Broker to add and remove Hosts from Conjur policy as your applications are deployed to or removed from PCF.
 
-  * **Conjur Policy**: The policy namespace you created for PCF. Leave blank to default to the root policy (not recommended). 
-  
+    This entry should be of the form `host/host-id`, where `host-id` is the fully-qualified Conjur Host ID. The `host/` prefix indicates to the Conjur authenticator that these credentials belong to a Host, and not a User.
+
+  * **Conjur API Key**: The API key of the Conjur Host whose identity you provided in the **Conjur Login** field.
+
+    If the Host's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.
+
+    <p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
+
+  * **PCF Conjur Policy Namespace**: The fully-qualified Conjur Policy ID of the dedicated Conjur policy for PCF that you created. Leave blank to default to the root policy (not recommended).
+
   * **Conjur Version**: Defaults to 5. Select 4 for Enterprise Conjur. Select 5 for Open Source Conjur (including an evaluation Hosted Conjur).
-  
-  * **Conjur Certificate**: Required for Conjur Enterprise only. Copy and paste the contents of the .pem file that was created by the `conjur init` command when the Conjur appliance was configured. Be sure to include the Begin and End lines in the certificate.  
-  
-  The .pem file is located in the root folder where Conjur was created. The file name is `conjur-account.pem`, where *account* is the account name provided for  the  Conjur instance.
 
-###<a id='config-buildpack'></a>Buildpack Setttings  
+  * **Conjur Certificate**: Required for Conjur Enterprise only. Copy and paste the contents of the .pem file that was created by the `conjur init` command when the Conjur appliance was configured. Be sure to include the Begin and End lines in the certificate.
 
-Do not change the installed sequence. `meta_buildpack` must install first, and `conjur_buildpack` must install second. 
+    The .pem file is located in the root folder where Conjur was created. The file name is `conjur-account.pem`, where *account* is the account name provided for the Conjur instance.
+
+###<a id='config-buildpack'></a>Buildpack Setttings
+
+Do not change the installed sequence. `meta_buildpack` must install first, and `conjur_buildpack` must install second.
 
 ###<a id='config-service-access'></a>Service Access
 
-If **Enable global access to plans of service Conjur** is checked, the Conjur service is available to all PCF users, across all orgs and spaces.   
-   
-To configure more precise access control, uncheck this option and use `cf enable-service-access` to specify which orgs and spaces can access the Conjur service.    
+If **Enable global access to plans of service Conjur** is checked, the Conjur service is available to all PCF users, across all orgs and spaces.
+
+To configure more precise access control, uncheck this option and use `cf enable-service-access` to specify which orgs and spaces can access the Conjur service.
 
 ###<a id='config-errands'></a>Errands
 
-The CyberArk Conjur Service Broker for PCF tile does not add any errands.  
+The CyberArk Conjur Service Broker for PCF tile does not add any errands.
 
-###<a id='config-resources'></a>Resource Config 
+###<a id='config-resources'></a>Resource Config
 
-The default settings are appropriate. 
+The default settings are appropriate.
 
-###<a id='config-stemcell'></a>Stemcell 
- 
-The latest major stemcell release is required by CyberArk Conjur Service Broker for PCF. 
+###<a id='config-stemcell'></a>Stemcell
+
+The latest major stemcell release is required by CyberArk Conjur Service Broker for PCF.
 
 If the Stemcell side tab has a green checkmark, you have the latest release and no action is required.
 
-If the Stemcell side tab has an orange circle, install the requested stemcell. 
- 
-
+If the Stemcell side tab has an orange circle, install the requested stemcell.
