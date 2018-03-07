@@ -149,7 +149,7 @@ When creating the dedicated Conjur policy for PCF, consider the following:
         layers: [ !layer pcf-apps ]
    ```
 
-   This policy file creates a `host/pcf-service-broker` Host that can be used as the `CONJUR_AUTHN_LOGIN` role in the Tile configuration.
+   This policy file creates a `host/pcf-service-broker` Host that can be used as the `CONJUR_AUTHN_LOGIN` role in the tile configuration.
 
    The `pcf-service-broker` Host is a member of the `pcf-admin-group` Group, which owns the `pcf` Policy, so it has `create` and `update` privileges on that Policy as required.
 
