@@ -38,7 +38,7 @@ The following table provides version and version-support information about Cyber
     <th>Details</th>
     <tr>
         <td>Tile version</td>
-        <td>v0.2.1</td>
+        <td>v0.3.0</td>
     </tr>
     <tr>
         <td>Release date</td>
@@ -46,8 +46,8 @@ The following table provides version and version-support information about Cyber
     </tr>
     <tr>
         <td>Software component version</td>
-        <td>CyberArk Conjur Service Broker - v0.2.0<br>
-            CyberArk Conjur Buildpack - v0.3.0</td>
+        <td>CyberArk Conjur Service Broker - v0.3.0<br>
+            CyberArk Conjur Buildpack - v1.0.0</td>
     </tr>
     <tr>
         <td>Compatible Ops Manager version(s)</td>
@@ -71,6 +71,7 @@ CyberArk Conjur Service Broker for PCF has the following requirements:
 + You must have an existing Conjur appliance installed.  The appliance may be external to the PCF environment. Supported versions are:
 
   * Enterprise Conjur (v4.9.12.0 and later)
+      * Use v4.9.17.0 or later to search for CF hosts in the Conjur UI
   * Open Source Conjur (v5.x)
       * Hosted Conjur is a hosted version of Open Source Conjur. You can quickly get a hosted Conjur instance running for evaluation purposes. Visit the [hosted Conjur page](https://www.conjur.org/get-started/try-conjur.html) to sign up.
 
@@ -127,6 +128,8 @@ When creating the dedicated Conjur policy for PCF, consider the following:
    ```
   - !host
     id: pcf-service-broker
+    annotations:
+      platform: pivotalcloudfoundry
 
   - !group
     id: pcf-admin-group
@@ -193,17 +196,15 @@ If you decide to leave the **PCF Conjur Policy Namespace** blank in the tile con
 
 * The PCF DevOps teams will be altering policy files in the root policy.
 
-* For integration with Conjur v4, a Host Factory named `apps` is required.  Add the following layer declaration to the root policy:
+* For integration with Conjur v4, a Host Factory named `apps` is required. Add the following layer declaration to the root policy:
 
-
- ```
+```
  - !layer apps
 
       - !host-factory
         id: apps
         layers: [ !layer apps ]
  ```
-
 
 ## <a id="limitations"></a>Limitations
 
