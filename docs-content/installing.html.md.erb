@@ -47,7 +47,7 @@ This tab configures communication between the Service Broker and a Conjur applia
 
   * **Conjur Login**: The fully-qualified ID of a Conjur Host.
 
-    The Host must have `create` and `update` privileges on the dedicated Conjur policy for PCF that you enter in the **PCF Conjur Policy Namespace** field. If you are not using a dedicated Conjur policy for PCF, this login Host must have `create` and `update` privileges on the Conjur root policy.
+    The Host must have `create` and `update` privileges on the dedicated Conjur policy for PCF that you enter in the **PCF Conjur Policy Branch ID** field. If you are not using a dedicated Conjur policy for PCF, this login Host must have `create` and `update` privileges on the Conjur root policy.
 
     This login is only used by the Service Broker to add and remove Hosts from Conjur policy as your applications are deployed to or removed from PCF.
 
@@ -59,7 +59,7 @@ This tab configures communication between the Service Broker and a Conjur applia
 
     <p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
 
-  * **PCF Conjur Policy Namespace**: The fully-qualified Conjur Policy ID of the dedicated Conjur policy for PCF that you created. Leave blank to default to the root policy (not recommended).
+  * **PCF Conjur Policy Branch ID**: The fully-qualified Conjur Policy ID of the dedicated Conjur policy for PCF that you created. Leave blank to default to the root policy (not recommended).
 
   * **Conjur Version**: Defaults to 5. Select 4 for Enterprise Conjur. Select 5 for Open Source Conjur (including an evaluation Hosted Conjur).
 

@@ -38,11 +38,11 @@ The following table provides version and version-support information about Cyber
     <th>Details</th>
     <tr>
         <td>Tile version</td>
-        <td>v0.3.0</td>
+        <td>v0.3.1</td>
     </tr>
     <tr>
         <td>Release date</td>
-        <td>April 27, 2018</td>
+        <td>May 1, 2018</td>
     </tr>
     <tr>
         <td>Software component version</td>
@@ -79,7 +79,7 @@ CyberArk Conjur Service Broker for PCF has the following requirements:
   * URL to the Conjur appliance.
   * Valid Conjur identity for a host that has `update` and `create` privileges on PCF-related Conjur policy. The Service Broker uses these credentials to add and remove host identities as you deploy and remove PCF applications. See [Recommendations](#recommendations).
   * Conjur API key associated with the host.
-  * PCF Conjur Policy Namespace (optional). For production Conjur appliances, CyberArk strongly recommends a Conjur policy dedicated to PCF; otherwise, the Conjur root policy is the default. See [Recommendations](#recommendations) for more information.
+  * PCF Conjur Policy Branch ID (optional). For production Conjur appliances, CyberArk strongly recommends a Conjur policy dedicated to PCF; otherwise, the Conjur root policy is the default. See [Recommendations](#recommendations) for more information.
   * Conjur v4 for Enterprise Conjur or v5 for Open Source Conjur.
 
 Enterprise Conjur (v4) has the following additional requirements:
@@ -167,7 +167,7 @@ For Conjur Open Source (v5):
 #### Step 3
 
 In the CyberArk Conjur Service Broker for PCF tile configuration:
-* For **PCF Conjur Policy Namespace**, use the fully-qualified ID of the dedicated Conjur policy for PCF (`pcf` in the above example).
+* For **PCF Conjur Policy Branch ID**, use the fully-qualified ID of the dedicated Conjur policy for PCF (`pcf` in the above example).
 * For **Conjur Login**, use a Conjur host who is a member of the Conjur group that owns the PCF policy (`host/pcf-service-broker` in the example above).
 * For **Conjur API Key**, use that host's API key. The admin who created the role can retrieve the value with this command:
 <pre class='term'>$ conjur host rotate_api_key -h pcf-service-broker</pre>
@@ -175,7 +175,7 @@ In the CyberArk Conjur Service Broker for PCF tile configuration:
 
 ### Use the Default Root Policy
 
-If you decide to leave the **PCF Conjur Policy Namespace** blank in the tile configuration (that is, you choose to use the default root policy), consider the following:
+If you decide to leave the **PCF Conjur Policy Branch ID** blank in the tile configuration (that is, you choose to use the default root policy), consider the following:
   * You are not following least privilege best practice.
   * The Conjur host identity that you provide on tile installation must have `create` and `update` privileges on the root policy, which means that it will be privileged to edit _any policy in your Conjur installation_.
   * The Service Broker will add host identities for your PCF applications to the root policy.
