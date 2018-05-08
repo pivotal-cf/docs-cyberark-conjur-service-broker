@@ -38,11 +38,11 @@ The following table provides version and version-support information about Cyber
     <th>Details</th>
     <tr>
         <td>Tile version</td>
-        <td>v0.3.1</td>
+        <td>v0.3.2</td>
     </tr>
     <tr>
         <td>Release date</td>
-        <td>May 1, 2018</td>
+        <td>May 8, 2018</td>
     </tr>
     <tr>
         <td>Software component version</td>
@@ -79,7 +79,7 @@ CyberArk Conjur Service Broker for PCF has the following requirements:
   * URL to the Conjur appliance.
   * Valid Conjur identity for a host that has `update` and `create` privileges on PCF-related Conjur policy. The Service Broker uses these credentials to add and remove host identities as you deploy and remove PCF applications. See [Recommendations](#recommendations).
   * Conjur API key associated with the host.
-  * PCF Conjur Policy Branch ID (optional). For production Conjur appliances, CyberArk strongly recommends a Conjur policy dedicated to PCF; otherwise, the Conjur root policy is the default. See [Recommendations](#recommendations) for more information.
+  * (Optional) PCF Conjur Policy Branch ID. For production Conjur appliances, CyberArk strongly recommends a Conjur policy dedicated to PCF; otherwise, the Conjur root policy is the default. See [Recommendations](#recommendations) for more information.
   * Conjur v4 for Enterprise Conjur or v5 for Open Source Conjur.
 
 Enterprise Conjur (v4) has the following additional requirements:
@@ -107,7 +107,6 @@ A dedicated Conjur policy for PCF supports least privilege principles in the fol
   * Conjur access privileges required by the Service Broker, DevOps teams, and your applications can be limited in scope to the dedicated Conjur policy for PCF.
   * You can give a limited set of Conjur users access to the dedicated Conjur policy for PCF, with even finer-grained permissions possible within the PCF policy itself.
   * For Conjur Enterprise (v4), you can define the host factory layer in the dedicated Conjur policy for PCF, rather than in the root policy.
-
 When creating the dedicated Conjur policy for PCF, consider the following:
  * The Service Broker requires `create` and `update` privileges on the policy to add and remove host identities. Members of the group that owns the policy have those privileges.
  * PCF DevOps personnel need access to Conjur to declare application secrets and grant privileges to the applications to access those secrets.
