@@ -38,15 +38,15 @@ The following table provides version and version-support information about Cyber
     <th>Details</th>
     <tr>
         <td>Tile version</td>
-        <td>v0.3.2</td>
+        <td>v0.3.3</td>
     </tr>
     <tr>
         <td>Release date</td>
-        <td>May 8, 2018</td>
+        <td>June 25, 2018</td>
     </tr>
     <tr>
         <td>Software component version</td>
-        <td>CyberArk Conjur Service Broker - v0.3.0<br>
+        <td>CyberArk Conjur Service Broker - v0.3.1<br>
             CyberArk Conjur Buildpack - v1.0.0</td>
     </tr>
     <tr>
@@ -131,6 +131,12 @@ Create a policy using the following example as a guide. Save the policy as a YAM
   role: !group pcf-admin-group
   member: !host pcf-service-broker
 
+# Allow host read access to its own resource, to read annotations
+- !permit
+  role: !host pcf-service-broker
+  privilege: read
+  resource: !host pcf-service-broker
+
 - !policy
   id: pcf                          /* Policy ID does not have to be pcf
   owner: !group pcf-admin-group    /* Owners have complete privileges on the policy
@@ -167,7 +173,7 @@ For Conjur Open Source (v5):
 
 In the CyberArk Conjur Service Broker for PCF tile configuration:
 * For **PCF Conjur Policy Branch ID**, use the fully-qualified ID of the dedicated Conjur policy for PCF (`pcf` in the above example).
-* For **Conjur Login**, use a Conjur host who is a member of the Conjur group that owns the PCF policy (`host/pcf-service-broker` in the example above).
+* For **Conjur Login**, use a Conjur host who is a member of the Conjur group that owns the PCF policy (`host/pcf-service-broker` in the example above). The host also needs to be permitted to read its own annotations.
 * For **Conjur API Key**, use that host's API key. The admin who created the role can retrieve the value with this command:
 <pre class='term'>$ conjur host rotate_api_key -h pcf-service-broker</pre>
 
