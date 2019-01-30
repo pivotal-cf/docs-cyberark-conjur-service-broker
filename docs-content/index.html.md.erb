@@ -63,7 +63,6 @@ The following table provides version and version-support information about Cyber
     </tr>
 </table>
 
-
 ## <a id="reqs"></a>Requirements
 
 CyberArk Conjur Service Broker for PCF has the following requirements:
@@ -83,8 +82,9 @@ CyberArk Conjur Service Broker for PCF has the following requirements:
   * Conjur v4 for Enterprise Conjur or v5 for Open Source Conjur.
 
 Enterprise Conjur (v4) has the following additional requirements:
-  *  The tile installation requires a copy and paste of the x509 certificate that was created when Conjur was initiated. The certificate is stored in a .pem file that was created by the `conjur init` command. The default path is `/conjur_install_directory/conjur-account.pem`.
-  *  The Service Broker requires a Conjur host factory to use when adding host identities. The examples in [Recommendations](#recommendations) include host factory definitions. If a host factory is not properly defined, a health check near the end of tile installation reports the condition, and the tile installation fails.
+
+*  The tile installation requires a copy and paste of the x509 certificate that was created when Conjur was initiated. The certificate is stored in a .pem file that was created by the `conjur init` command. The default path is `/conjur_install_directory/conjur-account.pem`.
+*  The Service Broker requires a Conjur host factory to use when adding host identities. The examples in [Recommendations](#recommendations) include host factory definitions. If a host factory is not properly defined, a health check near the end of tile installation reports the condition, and the tile installation fails.
 
 
 ## <a id="recommendations"></a>Recommendations
@@ -103,14 +103,17 @@ The syntax for defining a Conjur Policy with ID `pcf` is as follows:
 This can be loaded into the root policy or any other Conjur policy you would like. Host identities for PCF-deployed applications will be loaded into the `pcf` Conjur policy when the applications are bound to a Conjur service instance.
 
 A dedicated Conjur policy for PCF supports least privilege principles in the following ways:
-  * The secrets, host identities, and access control policies for your PCF-deployed applications are isolated from other resources stored in Conjur.
-  * Conjur access privileges required by the Service Broker, DevOps teams, and your applications can be limited in scope to the dedicated Conjur policy for PCF.
-  * You can give a limited set of Conjur users access to the dedicated Conjur policy for PCF, with even finer-grained permissions possible within the PCF policy itself.
-  * For Conjur Enterprise (v4), you can define the host factory layer in the dedicated Conjur policy for PCF, rather than in the root policy.
+
+* The secrets, host identities, and access control policies for your PCF-deployed applications are isolated from other resources stored in Conjur.
+* Conjur access privileges required by the Service Broker, DevOps teams, and your applications can be limited in scope to the dedicated Conjur policy for PCF.
+* You can give a limited set of Conjur users access to the dedicated Conjur policy for PCF, with even finer-grained permissions possible within the PCF policy itself.
+* For Conjur Enterprise (v4), you can define the host factory layer in the dedicated Conjur policy for PCF, rather than in the root policy.
+
 When creating the dedicated Conjur policy for PCF, consider the following:
- * The Service Broker requires `create` and `update` privileges on the policy to add and remove host identities. Members of the group that owns the policy have those privileges.
- * PCF DevOps personnel need access to Conjur to declare application secrets and grant privileges to the applications to access those secrets.
- * For Conjur Enterprise (v4), a host factory is required. Both the ID of the layer and the host factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf-apps` is used in the policy example shown below where the dedicated policy for PCF is called `pcf`.
+
+* The Service Broker requires `create` and `update` privileges on the policy to add and remove host identities. Members of the group that owns the policy have those privileges.
+* PCF DevOps personnel need access to Conjur to declare application secrets and grant privileges to the applications to access those secrets.
+* For Conjur Enterprise (v4), a host factory is required. Both the ID of the layer and the host factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf-apps` is used in the policy example shown below where the dedicated policy for PCF is called `pcf`.
 
 To create a dedicated Conjur policy for PCF, do the following:
 
@@ -172,20 +175,23 @@ For Conjur Open Source (v5):
 #### Step 3
 
 In the CyberArk Conjur Service Broker for PCF tile configuration:
+
 * For **PCF Conjur Policy Branch ID**, use the fully-qualified ID of the dedicated Conjur policy for PCF (`pcf` in the above example).
 * For **Conjur Login**, use a Conjur host who is a member of the Conjur group that owns the PCF policy (`host/pcf-service-broker` in the example above). The host also needs to be permitted to read its own annotations.
 * For **Conjur API Key**, use that host's API key. The admin who created the role can retrieve the value with this command:
+
 <pre class='term'>$ conjur host rotate_api_key -h pcf-service-broker</pre>
 
 
 ### Use the Default Root Policy
 
-If you decide to leave the **PCF Conjur Policy Branch ID** blank in the tile configuration (that is, you choose to use the default root policy), consider the following:
-  * You are not following least privilege best practice.
-  * The Conjur host identity that you provide on tile installation must have `create` and `update` privileges on the root policy, which means that it will be privileged to edit _any policy in your Conjur installation_.
-  * The Service Broker will add host identities for your PCF applications to the root policy.
-  * The PCF DevOps teams will be altering policy files in the root policy.
-  * For integration with Conjur v4, a Host Factory named `apps` is required. Add the following layer declaration to the root policy:
+If you decide to leave the **PCF Conjur Policy Namespace** blank in the tile configuration (that is, you choose to use the default root policy), consider the following:
+
+* You are not following least privilege best practice.
+* The Conjur host identity that you provide on tile installation must have `create` and `update` privileges on the root policy, which means that it will be privileged to edit _any policy in your Conjur installation_.
+* The Service Broker will add host identities for your PCF applications to the root policy.
+* The PCF DevOps teams will be altering policy files in the root policy.
+* For integration with Conjur v4, a Host Factory named `apps` is required. Add the following layer declaration to the root policy:
 
 ```
 - !layer apps
