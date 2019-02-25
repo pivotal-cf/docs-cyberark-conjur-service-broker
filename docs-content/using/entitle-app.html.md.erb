@@ -1,0 +1,82 @@
+
+> **NOTE:** These steps are optional for Conjur Open Source or Conjur EE v5+
+
+These steps enable you to entitle a specific application to access secrets in Conjur, rather
+than entitling an org or space and allowing the application to inherit those permissions.
+
+ - [Step 1: Obtain the Binding ID](#bind)
+ - [Step 2: Update the Conjur Policy File with the Binding ID](#update-policy)
+ - [Step 3: Restage the Application](#restage)
+
+#### <a id="bind"></a> Step 1: Obtain the Binding ID
+
+Binding occurs automatically if the application manifest contains the correct service instance name. If you are not using a manifest, run the `cf bind-service` command to bind the application manually. For example:
+
+<pre class='term'>$ cf bind-service my-app my-service-instance-name</pre>
+
+The binding process generates a binding ID that becomes the Conjur host ID, used as a unique application identity for this application running in this space.
+
+The ID is stored in the `authn_login` string found under the VCAP_SERVICES environment variable. The `authn_login` string has the format `host/global-policy-id/binding_id`. For example, `host/pcf/0299a19d-7de4-4e98-89f6-372ac7c0521f` would be the value of `authn_login` if the tile was configured to add hosts to the `pcf` Conjur Policy.
+
+The following command extracts just the binding ID value that you need.
+
+<pre class='term'>$ cf env $APP_NAME | grep authn_login | awk '{print $NF}' | sed 's/host.*\///g; s/"//g; s/,$//g'</pre>
+
+#### <a id="update-policy"></a> Step 2: Update Conjur Policy Grants
+
+The binding ID obtained in the previous step becomes the host ID to use in Conjur policies.
+
+**For Conjur Open Source and Conjur Enterprise v5:** The application binding ID host is automatically
+added to the layers for the Organization and Space where the application is deployed. The
+application inherits the permissions of the Org and Space without requiring additional entitlements. These steps
+may still be used to permit specific applications to access Conjur secrets.
+
+1. Log into the Conjur appliance.
+
+2. Update policy to grant read and execute privileges to the new host ID on a set of secrets.
+   For example, the following policy adds the new host to the existing secrets-users group. You can save these lines in a separate file, such as `app-entitlements.yml`.
+
+   **For Conjur Enterprise v4:**
+   
+   ```
+    # app-entitlements.yml
+
+   - !grant
+     role: !group my-app/secrets-users
+     member: !host /pcf/production/0299a19d-7de4-4e98-89f6-372ac7c0521f
+   ```
+
+   Load the policy with:
+
+   ```
+   conjur policy load --as-group security_admin app-entitlements.yml
+   ```
+
+   **For Conjur Open Source and Conjur Enterprise v5:**
+   
+   The application host will be loaded into the Org and Space policy hierarchy:
+
+   ```
+   - !grant
+     role: !group my-app/secrets-users
+     member: !host /pcf/production/8f366b77-d826-4522-8cc6-261bf9b02cba/4b02b69c-ba35-4069-b634-ded5644740c9/0299a19d-7de4-4e98-89f6-372ac7c0521f
+   ```
+
+   Load the policy with:
+
+   ```
+   conjur policy load root app-entitlements.yml
+   ```
+
+3. Load the policy change. The following command loads the grant in `entitlements.yml` into the `apps` Conjur policy:
+   <pre class='term'>$ conjur policy load apps entitlements.yml</pre>
+   
+   In Enterprise Conjur (v4), you could also choose to use an `!include` statement in the existing PCF Policy.
+
+####<a id="restage"></a>Step 4: Restage the Application
+
+Start or restage the application.
+
+<pre class='term'>$ cf restage my-app</pre>
+
+On application startup, the service loads the secrets that are defined in the application's `secrets.yml` into the PCF environment.

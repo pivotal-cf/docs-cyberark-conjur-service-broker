@@ -5,6 +5,28 @@ owner: Partners
 
 These are release notes for CyberArk Conjur Service Broker for PCF (Beta).
 
+## <a id="ver"></a> v1.0.0
+
+**Release Date:** Mar 6, 2019
+
+Features in this release:
+
+* Simplified policy management and deployment:
+  - Conjur Service Broker automatically creates policy branches in Conjur
+    to mirror org and space structure in PCF during the service instance provisioning. 
+  - Entitlements can be added to orgs and spaces.
+  - Applications are auto-enrolled into org and space layers on bind.
+  
+* Applications use Conjur followers to retrieve secrets for a improved scalability
+
+* Conjur Buildpack is updated to a supply buildpack to enable use of multi-buildpack
+  functionality
+
+
+Known issues in this release:
+
+* Conjur Buildpack does not currently support Java applications using Spring Boot 1.4+
+
 ##<a id="ver"></a> v0.3.3
         
 **Release Date:** June 26, 2018 
