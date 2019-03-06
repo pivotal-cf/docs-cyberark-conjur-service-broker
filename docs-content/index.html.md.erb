@@ -3,11 +3,6 @@ title: CyberArk Conjur Service Broker for PCF (Beta)
 owner: Partners
 ---
 
-<p class="note warning"><strong> Warning:</strong>
-This tile requires a Trusty stemcell.
-The end-of-life date for Ubuntu Trusty is April 2019.
-If a security vulnerability is found on this stemcell after April, it will not be fixed.</p>
-
 <p class='note warning'><strong>Warning:</strong> The CyberArk Conjur Service Broker for PCF tile is currently in beta and is intended for evaluation and test purposes only. Do not use this product in a PCF production environment.</p>
 
 This documentation describes the CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF). This Service Broker provides Conjur machine identity management and authentication, policy-based authorization, and other Conjur services to your PCF applications and microservices.
@@ -15,25 +10,26 @@ This documentation describes the CyberArk Conjur Service Broker for Pivotal Clou
 
 ## <a id='overview'></a>Overview
 
-The CyberArk Conjur Service Broker for PCF registers a service broker with PCF and exposes its service plans on the Marketplace. Developers can then create applications that access a Conjur appliance. The Service Broker provides the interface between your PCF applications and a Conjur appliance.
+The CyberArk Conjur Service Broker for PCF registers a service broker with PCF and exposes its service plans on the
+Marketplace. Developers can then create applications that access a Conjur instance. The Service Broker provides the
+interface between your PCF applications and a Conjur instance.
 
-The CyberArk Conjur Service Broker for PCF installs a buildpack that includes the Conjur Summon tool. Summon fetches secrets from Conjur using the binding ID from your PCF service as the unique application identity.
+The CyberArk Conjur Service Broker for PCF installs a buildpack that leverages the [Conjur Summon](https://cyberark.github.io/summon/)
+tool. Summon fetches secrets from Conjur using the binding ID from your PCF service as the unique application identity.
 
 
 ## <a id='features'></a>Key Features
 
 CyberArk Conjur Service Broker for PCF includes the following key features:
 
-* After you configure the tile and bind applications to service instances, your PCF applications, containers, and microservices assume a host identity in Conjur. This identity enables secure access to secret values and policy grants stored in Conjur.
-* If you have an existing Conjur appliance, you can grant privileges to PCF applications to access the existing Conjur secrets through Conjur policy.
+* After you configure the tile and bind applications to service instances, your PCF applications, containers, and microservices assume a host identity in Conjur. This identity enables secure access to secrets stored in Conjur.
+* If you have an existing Conjur instance, you can grant privileges to PCF applications to access the existing Conjur secrets through Conjur policy.
 * Conjur integrates easily into the PCF environment and the PCF developer workflow.
 * The strong authentication model provided by Conjur is available to PCF applications.
 * The Conjur role-based policy model for authorizations applies to applications running in PCF.
 * Access to secrets is configurable at the PCF application level, making it easy to ensure least privilege access.
 
-
 ## <a id="snapshot"></a>Product Snapshot
-
 
 The following table provides version and version-support information about CyberArk Conjur Service Broker for PCF.
 
@@ -42,28 +38,28 @@ The following table provides version and version-support information about Cyber
     <th>Details</th>
     <tr>
         <td>Tile version</td>
-        <td>v0.3.3</td>
+        <td>v1.0.0</td>
     </tr>
     <tr>
         <td>Release date</td>
-        <td>June 26, 2018</td>
+        <td>March 6, 2019</td>
     </tr>
     <tr>
         <td>Software component version</td>
-        <td>CyberArk Conjur Service Broker - v0.3.1<br>
-            CyberArk Conjur Buildpack - v1.0.0</td>
+        <td>CyberArk Conjur Service Broker - v1.0.0<br>
+            CyberArk Conjur Buildpack - v2.0.0</td>
     </tr>
     <tr>
         <td>Compatible Ops Manager version(s)</td>
-        <td>v1.11.x, v1.12.x, v2.0.x, v2.1.x, v2.2.x, and v2.3.x</td>
+        <td>v1.12.x, v2.0.x, v2.1.x, v2.2.x, v2.3.x, v2.4.x, and v2.5.x</td>
     </tr>
     <tr>
         <td>Compatible Pivotal Application Service version(s)</td>
-        <td>v1.11.x, v1.12.x, v2.0.x, v2.1.x, v2.2.x, and v2.3.x</td>
+        <td>v1.12.x, v2.0.x, v2.1.x, v2.2.x, v2.3.x, v2.4.x, and v2.5.x</td>
     </tr>
     <tr>
         <td>BOSH stemcell version</td>
-        <td>Ubuntu Trusty</td>
+        <td>Ubuntu Xenial</td>
     </tr>
     <tr>
         <td>IaaS support</td>
@@ -75,24 +71,104 @@ The following table provides version and version-support information about Cyber
 
 CyberArk Conjur Service Broker for PCF has the following requirements:
 
-+ You must have an existing Conjur appliance installed.  The appliance may be external to the PCF environment. Supported versions are:
-  * Enterprise Conjur (v4.9.12.0 and later)
++ **You must have an existing Conjur instance installed.  The Conjur instance may be external to the PCF environment. Supported versions are:**
+  * Conjur Enterprise (v4.9.12.0 and later)
       * Use v4.9.17.0 or later to search for CF hosts in the Conjur UI
-  * Open Source Conjur (v5.x)
+  * Conjur Open Source (v1.0 and later)
       * Hosted Conjur is a hosted version of Open Source Conjur. You can quickly get a hosted Conjur instance running for evaluation purposes. Visit the [hosted Conjur page](https://www.conjur.org/get-started/try-conjur.html) to sign up.
 
-+ To configure the PCF tile, you must know the following information about your Conjur appliance:
-  * Conjur account, which is specified when the Conjur appliance is created and configured. For hosted Conjur, the account is usually an email address that you specify on the web form.
-  * URL to the Conjur appliance.
-  * Valid Conjur identity for a host that has `update` and `create` privileges on PCF-related Conjur policy. The Service Broker uses these credentials to add and remove host identities as you deploy and remove PCF applications. See [Recommendations](#recommendations).
-  * Conjur API key associated with the host.
-  * (Optional) PCF Conjur Policy Branch ID. For production Conjur appliances, CyberArk strongly recommends a Conjur policy dedicated to PCF; otherwise, the Conjur root policy is the default. See [Recommendations](#recommendations) for more information.
-  * Conjur v4 for Enterprise Conjur or v5 for Open Source Conjur.
++ **To configure the PCF tile, you must know the following information about your Conjur installation:**
+    <table class="nice">
+        <tr>
+            <td>
+                **Conjur Account**
+            </td>
+            <td>
+                Specified when Conjur is installed and configured. For hosted Conjur, the account is usually
+                an email address that you specify on the web form.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                **URL of the Conjur instance**
+            </td>
+            <td>
+                May be the Conjur master load balancer if deploying in a High Availability (HA) configuration.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                **Conjur Host Id for Service Broker**
+            </td>
+            <td>
+                Valid Conjur identity for a host that has `update` and `create` privileges on PCF-related
+                Conjur policy. The Service Broker uses these credentials to add and remove host identities
+                as you deploy and remove PCF applications. See [Recommendations](#recommendations).
+            </td>
+        </tr>
+        <tr>
+            <td>
+                **Conjur API key**
+            </td>
+            <td>
+                The Conjur API key associated with the **Conjur Host Id** for the service broker above.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                **PCF Conjur Policy Branch ID**<br/>
+                (Recommended)
+            </td>
+            <td>
+                For production Conjur appliances, CyberArk strongly recommends a Conjur policy dedicated to PCF;
+                otherwise, the Conjur root policy is the default. See [Recommendations](#recommendations) for more information.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                **URL of the Conjur follower load balancer**<br/>
+                (Conjur Enterprise v5.x+)<br/>
+                (Optional)
+            </td>
+            <td>
+                If deploying a cluster in an HA configuration, you can specify a URL for PCF apps to connect to
+                a Conjur follower to retrieve secret values rather than through the Conjur master. Cyberark strongly
+                recommends that you supply a load balanced follower address to support easier scalability.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                **X.509 CA Certificate Chain for Conjur**<br/>
+                (Required for TLS/HTTPS connections to Conjur)
+            </td>
+            <td>
+                The PEM encoded X.509 certificate chain for the Conjur server.<br/>
+                <br/>
+                This certificate chain may be retrieved from the Conjur server using the command:
+                <pre class='term'>
+$ openssl s_client -showcerts -servername [CONJUR_DNS_NAME] \
+        -connect [CONJUR_DNS_NAME]:443 < /dev/null 2> /dev/null \
+        | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+                </pre>
+            </td>
+        </tr>
+    </table>
 
-Enterprise Conjur (v4) has the following additional requirements:
 
-*  The tile installation requires a copy and paste of the x509 certificate that was created when Conjur was initiated. The certificate is stored in a .pem file that was created by the `conjur init` command. The default path is `/conjur_install_directory/conjur-account.pem`.
-*  The Service Broker requires a Conjur host factory to use when adding host identities. The examples in [Recommendations](#recommendations) include host factory definitions. If a host factory is not properly defined, a health check near the end of tile installation reports the condition, and the tile installation fails.
++ **The Conjur Service Broker requires that each space have its own service instance.**
+
+    Conjur Service instances may not be [shared across spaces](https://docs.cloudfoundry.org/devguide/services/sharing-instances.html).
+    In the interest of least privilege, a single Conjur service instance must be 
+    provisioned in each space where it is needed, using:
+
+    <pre class='term'>$ cf create-service cyberark-conjur community my-service-instance-name</pre>
+
++ **(Conjur EE v4.x only) Conjur Host Factory**
+
+    The Service Broker requires a Conjur host factory to use when adding host identities. The examples in [Recommendations](#recommendations) include host factory definitions. If a host factory is not properly defined, a health check near the end of tile installation will report the condition, and the tile installation will fail.
 
 
 ## <a id="recommendations"></a>Recommendations
@@ -100,15 +176,22 @@ Enterprise Conjur (v4) has the following additional requirements:
 ### Create a Dedicated Conjur Policy for PCF
 
 CyberArk strongly recommends that you create a Conjur policy dedicated to PCF before installing the PCF tile.
+This policy should include a unique identifier for the foundation (e.g. `production`) to make managing Conjur
+policy easier across multiple PCF installation.
 
-The syntax for defining a Conjur Policy with ID `pcf` is as follows:
+The syntax for defining a Conjur Policy with ID `pcf/production` is as follows:
 
 ```
 - !policy
   id: pcf
+  body:
+  - !policy
+    id: production
 ```
 
-This can be loaded into the root policy or any other Conjur policy you would like. Host identities for PCF-deployed applications will be loaded into the `pcf` Conjur policy when the applications are bound to a Conjur service instance.
+This can be loaded into the root policy or any desired Conjur policy branch. Host identities for
+PCF-deployed applications will be loaded into the `pcf/production` Conjur policy branch when the
+applications are bound to a Conjur service instance.
 
 A dedicated Conjur policy for PCF supports least privilege principles in the following ways:
 
@@ -121,7 +204,7 @@ When creating the dedicated Conjur policy for PCF, consider the following:
 
 * The Service Broker requires `create` and `update` privileges on the policy to add and remove host identities. Members of the group that owns the policy have those privileges.
 * PCF DevOps personnel need access to Conjur to declare application secrets and grant privileges to the applications to access those secrets.
-* For Conjur Enterprise (v4), a host factory is required. Both the ID of the layer and the host factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf-apps` is used in the policy example shown below where the dedicated policy for PCF is called `pcf`.
+* For Conjur Enterprise (v4), a host factory is required. Both the ID of the layer and the host factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf/production-apps` is used in the policy example shown below where the dedicated policy for PCF is called `pcf/production`.
 
 To create a dedicated Conjur policy for PCF, do the following:
 
@@ -149,49 +232,81 @@ Create a policy using the following example as a guide. Save the policy as a YAM
   resource: !host pcf-service-broker
 
 - !policy
-  id: pcf                          /* Policy ID does not have to be pcf
-  owner: !group pcf-admin-group    /* Owners have complete privileges on the policy
-  body:                            /* The body and following layer are
-    - !layer pcf-apps              /* required for Conjur Enterprise v4;
-                                   /* optional otherwise.
-                                   /* Layer name and host-factory name
-                                   /* must be [policy-id]-apps
+  id: pcf                            # Policy ID does not have to be pcf
+  body:
+  - !policy
+    id: production                   # Multiple PCF Foundations may be identified using
+                                     # a sub-policy branch, e.g. "production".
+    owner: !group /pcf-admin-group   # Owners have complete privileges on the policy
+
+    # The policy body, layer, and host factory
+    # are required for Conjur EE v4:
+    body:
+
+    # Layer name and host-factory name must be [policy-id]-apps
+    - !layer pcf/production-apps  
 
     - !host-factory
-      id: pcf-apps
-      layers: [ !layer pcf-apps ]
+      id: pcf/production-apps
+      layers: [ !layer pcf/production-apps ]
 ```
 
-This policy file creates a `host/pcf-service-broker` host that can be used as the `CONJUR_AUTHN_LOGIN` role in the tile configuration.
-The `pcf-service-broker` host is a member of the `pcf-admin-group` group, which owns the `pcf` policy, so it has `create` and `update` privileges on that policy as required.
+This policy file creates a `host/pcf-service-broker` host that can be used as the `CONJUR_AUTHN_LOGIN` role
+in the tile configuration. The `pcf-service-broker` host is a member of the `pcf-admin-group` group, which
+owns the `pcf/production` policy, so it has `create` and `update` privileges on that policy as required.
 
-The PCF policy has a `pcf-apps` layer and corresponding host factory. If using Conjur v4, application hosts will be added to the `pcf-apps` layer via the `pcf-apps` host factory when the application is bound to a Conjur service instance.
-Additional policies for individual applications can be appended to this file or loaded in separate YAML files as needed.
+The PCF policy has a `pcf/production-apps` layer and corresponding host factory. If using Conjur v4, application
+hosts will be added to the `pcf/production-apps` layer via the `pcf-apps` host factory when the application is
+bound to a Conjur service instance.
 
 #### Step 2
 
 Load the policy into Conjur as follows (in this example, we are loading it into the root policy):
 
-For Conjur Enterprise (v4):
+**For Conjur Enterprise v4:**
 
 <pre class='term'>$ conjur policy load --as-group security_admin your-pcf-policy-file.yml</pre>
 
-For Conjur Open Source (v5):
+> **NOTE:** You may have to first install the `policy` plugin for the Conjur CLI. If you receive
+> this message when loading the policy:
+>
+> ```
+> $ conjur policy load ...
+> error: Unknown command 'policy'
+> ```
+>
+> Then you may install the `policy` plugin using the command:
+>
+> ```
+> $ conjur plugin install policy
+> Successfully installed conjur-asset-policy-0.13.0
+> 1 gem installed
+> ```
+
+
+**For Conjur Open Source and Conjur Enterprise v5:**
 
 <pre class='term'>$ conjur policy load root your-pcf-policy-file.yml</pre>
+
+Loading this policy the first time will output the API key for the `pcf-service-broker` host. Save
+this key to use when configuring the PCF tile below.
 
 #### Step 3
 
 In the CyberArk Conjur Service Broker for PCF tile configuration:
 
-* For **PCF Conjur Policy Branch ID**, use the fully-qualified ID of the dedicated Conjur policy for PCF (`pcf` in the above example).
-* For **Conjur Login**, use a Conjur host who is a member of the Conjur group that owns the PCF policy (`host/pcf-service-broker` in the example above). The host also needs to be permitted to read its own annotations.
+* For **PCF Conjur Policy Branch ID**, use the fully-qualified ID of the dedicated Conjur policy for PCF
+  (`pcf/production` in the above example). 
+  
+* For **Conjur Login**, use a Conjur host who is a member of the
+  Conjur group that owns the PCF policy (`host/pcf-service-broker` in the example above). The host also
+  needs to be permitted to read its own annotations.
+
 * For **Conjur API Key**, use that host's API key. The admin who created the role can retrieve the value with this command:
+  <pre class='term'>$ conjur host rotate_api_key -h pcf-service-broker</pre>
 
-<pre class='term'>$ conjur host rotate_api_key -h pcf-service-broker</pre>
 
-
-### Use the Default Root Policy
+### Using the Default Root Policy
 
 If you decide to leave the **PCF Conjur Policy Namespace** blank in the tile configuration (that is, you choose to use the default root policy), consider the following:
 
@@ -201,13 +316,13 @@ If you decide to leave the **PCF Conjur Policy Namespace** blank in the tile con
 * The PCF DevOps teams will be altering policy files in the root policy.
 * For integration with Conjur v4, a Host Factory named `apps` is required. Add the following layer declaration to the root policy:
 
-```
-- !layer apps
+    ```
+    - !layer apps
 
-- !host-factory
-  id: apps
-  layers: [ !layer apps ]
-```
+    - !host-factory
+    id: apps
+    layers: [ !layer apps ]
+    ```
 
 ## <a id="limitations"></a>Limitations
 
@@ -222,7 +337,7 @@ If you have a feature request, questions, or information about a bug, please ema
 
 ## <a id='license'></a>License
 
-Copyright 2018 CyberArk
+Copyright 2019 CyberArk
 
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this software except in compliance with the License. You may obtain a copy of the License at:
 

@@ -6,9 +6,9 @@ owner: Partners
 
 This topic describes how to install and configure CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF).
 
-##<a id='install'></a>Install and Configure CyberArk Conjur Service Broker for PCF
+## <a id='install'></a>Install and Configure CyberArk Conjur Service Broker for PCF
 
-1. Download the CyberArk Conjur Service Broker for PCF product file from <a href = "https://network.pivotal.io">Pivotal Network</a>.
+1. Download the CyberArk Conjur Service Broker for PCF product file from <a href = "https://network.pivotal.io/products/cyberark-conjur/">Pivotal Network</a>.
 
 1. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file.
 
@@ -31,64 +31,99 @@ This adds the tile to your staging area.
 
 1. Use `cf marketplace` to verify availability of the community service named `cyberark-conjur`.
 
-###<a id='assign-az'></a>Assign AZs and Networks
+### <a id='assign-az'></a>Assign AZs and Networks
 
 Choose appropriate values to configure where to deploy CyberArk Conjur Service Broker for PCF.
 
-###<a id='config-service-broker'></a>Service Broker Configuration
+### <a id='config-service-broker'></a>Service Broker Configuration
 
 This tab configures communication between the Service Broker and a Conjur appliance.
 
-![Conjur Service Broker Configuration tab](service_broker_config_screen.png)
+![Conjur Service Broker Configuration tab](tile_config_screen.png)
 
-  * **Conjur Account**: The organization account assigned during Conjur appliance installation. If you are using a hosted Conjur instance for a proof of concept, the account is typically your email address.
+  * **Conjur Account**:
+    The organization account assigned during Conjur appliance installation. If
+    you are using the [**Try Conjur**](https://www.conjur.org/get-started/try-conjur.html) hosted Conjur instance for a proof of concept, the account is
+    typically your email address.
 
-  * **Conjur Appliance URL**: The URL of the Conjur appliance that you are connecting to.
+  * **Conjur Appliance URL**:
+    The URL of the Conjur appliance that you are connecting to. If you
+    are using [**Try Conjur**](https://www.conjur.org/get-started/try-conjur.html) hosted Conjur,
+    this is `https://eval.conjur.org`.
 
-  * **Conjur Login**: The fully-qualified ID of a Conjur Host.
+  * **Conjur Follower URL (Optional)**:
+    If using high availability in Conjur EE, this should be the URL
+    for a load balancer that manages the cluster's Follower instances. This is the URL that
+    applications that bind to the service broker will use to communicate with Conjur.
 
+  * **Conjur Login**:
+    The fully-qualified ID of a Conjur host for the service broker.
+    <br/><br/>
     The Host must have `create` and `update` privileges on the dedicated Conjur policy for PCF that you enter in the **PCF Conjur Policy Branch ID** field. If you are not using a dedicated Conjur policy for PCF, this login Host must have `create` and `update` privileges on the Conjur root policy.
-
+    <br/><br/>
     This login is only used by the Service Broker to add and remove Hosts from Conjur policy as your applications are deployed to or removed from PCF.
+    <br/><br/>
+    This entry should be of the form `host/host-id`, where `host-id` is the fully-qualified Conjur Host ID (e.g. `host/pcf-service-broker`). The `host/` prefix indicates to the Conjur authenticator that these credentials belong to a Host, and not a User.
 
-    This entry should be of the form `host/host-id`, where `host-id` is the fully-qualified Conjur Host ID. The `host/` prefix indicates to the Conjur authenticator that these credentials belong to a Host, and not a User.
-
-  * **Conjur API Key**: The API key of the Conjur Host whose identity you provided in the **Conjur Login** field.
-
-    If the Host's API key changes, you need to update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.
-
+  * **Conjur API Key**:
+    The API key of the Conjur Host whose identity you provided in the **Conjur Login** field.
+    <br/><br/>
+    If the Host's API key changes, update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.
+    <br/><br/>
     <p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to PCF admins. They are not generally accessible to users in PCF.</p>
 
-  * **PCF Conjur Policy Branch ID**: The fully-qualified Conjur Policy ID of the dedicated Conjur policy for PCF that you created. Leave blank to default to the root policy (not recommended).
+  * **Conjur Version**:
+  Defaults to 5. Select 4 for Enterprise Conjur v4. Select 5 for Enterprise Conjur v5 or Open Source Conjur (including an evaluation Hosted Conjur).
 
-  * **Conjur Version**: Defaults to 5. Select 4 for Enterprise Conjur. Select 5 for Open Source Conjur (including an evaluation Hosted Conjur).
+  * **PCF Conjur Policy Branch ID**:
+  The fully-qualified Conjur Policy ID of the dedicated Conjur policy for PCF that you created (e.g. `pcf/production`). Leave blank to default to the root policy (not recommended).
 
-  * **Conjur Certificate**: Required for Conjur Enterprise only. Copy and paste the contents of the .pem file that was created by the `conjur init` command when the Conjur appliance was configured. Be sure to include the Begin and End lines in the certificate.
+  * **Conjur Certificate**:
+    The PEM encoded x509 certificate chain for the Conjur server.
+    <br/><br/>
+    This certificate chain may be retrieved from the Conjur server using the command:
+    <pre class='term'>
+$ openssl s_client -showcerts -servername [CONJUR_DNS_NAME] \
+        -connect [CONJUR_DNS_NAME]:443 < /dev/null 2> /dev/null \
+        | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+    </pre>
 
-    The .pem file is located in the root folder where Conjur was created. The file name is `conjur-account.pem`, where *account* is the account name provided for the Conjur instance.
+    <br/>
+    The certificate value should include the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines:
 
-###<a id='config-buildpack'></a>Buildpack Setttings
+    ```
+    -----BEGIN CERTIFICATE-----
+    ...
+    -----END CERTIFICATE-----
+    ```
 
-Do not change the installed sequence. `meta_buildpack` must install first, and `conjur_buildpack` must install second.
+Click **Save** after providing the configuration values.
 
-###<a id='config-service-access'></a>Service Access
+### <a id='config-buildpack'></a>Buildpack Setttings
+
+The tile installs the Conjur Buildpack, which enables your applications to leverage Summon to automatically inject secrets. The default settings are appropriate.
+
+### <a id='config-service-access'></a>Service Access
 
 If **Enable global access to plans of service Conjur** is checked, the Conjur service is available to all PCF users, across all orgs and spaces.
 
 To configure more precise access control, uncheck this option and use `cf enable-service-access` to specify which orgs and spaces can access the Conjur service.
 
-###<a id='config-errands'></a>Errands
+### <a id='config-errands'></a>Errands
 
 The CyberArk Conjur Service Broker for PCF tile does not add any errands.
 
-###<a id='config-resources'></a>Resource Config
+### <a id='config-resources'></a>Resource Config
 
 The default settings are appropriate.
 
-###<a id='config-stemcell'></a>Stemcell
+### Apply Changes
 
-The latest major stemcell release is required by CyberArk Conjur Service Broker for PCF.
+After configuring the tile, finish the installation:
 
-If the Stemcell side tab has a green checkmark, you have the latest release and no action is required.
-
-If the Stemcell side tab has an orange circle, install the requested stemcell.
+* Navigate to the Ops Manager Dashboard
+* Click **Review Pending Changes**
+* Click **Apply Changes**
