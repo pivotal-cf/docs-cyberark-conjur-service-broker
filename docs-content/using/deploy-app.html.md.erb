@@ -1,0 +1,212 @@
+
+This procedure enables a PCF application to obtain secrets and manage authorization privileges from an existing Conjur appliance.
+
+You can push the same application to multiple spaces. After you prepare the application as described in Step 1 below, target your desired orgs and spaces and perform the remaining steps for each space.
+
+ - [Step 1: Prepare the Application](#secrets)
+ - [Step 2: Create a Service Instance](#create-service)
+ - [Step 3: Permit Secret Access by Org and Space (Conjur Open Source and Conjur EE v5+ only)](#permit-org-space)
+ - [Step 4: Edit Manifest File](#edit-manifest)
+ - [Step 5: Push Application to PCF Space](#push-app)
+
+#### <a id="secrets"></a>Step 1: Prepare the Application
+
+The CyberArk Conjur Service Broker for PCF uses the Summon application included in the Conjur Buildpack by default to fetch secrets from the Conjur appliance and inject the values into your application's environment.
+
+The secrets, fetched at application startup, are available only to the application process (not to users), and are gone when the process exits.  Summon requires a `secrets.yml` file in the application's root folder.
+
+If your application uses another method to access secrets, such as Conjur API calls, you do not need a `secrets.yml` file.
+
+1. Create a file named `secrets.yml`.
+
+2. Add entries to the file to define the secrets that the application will
+   fetch. Secrets to fetch from Conjur are specified with a `!<tag>` and a
+   pathname indicating the Conjur policy path. More information on the
+   format for `secrets.yml` [is available below](#secrets.yml).
+
+3. Store the `secrets.yml` file in the root folder of your application.
+
+    > **NOTE:** If you deploy your application in a packaged format (e.g. as a JAR file),
+    > you will want to ensure your secrets.yml configuration file is available 
+    > in the root application directory at deploy time (e.g. for a JAR file, 
+    > you can store secrets.yml in the src/main/resources directory of your application
+    > if using Spring Boot versions below 1.4).
+
+4. If the secrets that your application needs are not already available in
+   Conjur policy, create a policy file `my-app.yml` that adds the secrets
+   to Conjur. The `my-app` policy can also create a Group that is
+   entitled to fetch the secret values; the Org layer, Space, layer or
+   application Host can be added to that Group in [a later step](#update-policy)
+   to grant it access to the secret values.
+
+5. If you created a `my-app.yml` policy file, load it into Conjur under the dedicated Conjur policy for PCF. For example, if your dedicated Conjur policy for PCF is called `pcf`:
+
+    **For Enterprise Conjur v4:**
+
+      Add `!include my-app.yml` to the body of the `pcf` policy (defined in `pcf.yml` in the example below) and reload the policy as follows:
+
+      <pre class='term'>$ conjur policy load --as-group security_admin pcf.yml</pre>
+
+      If `pcf.yml` contains only the `pcf` policy, and if we have set that policy so that it is owned by the `pcf-admin-group` group, you could also reload by calling:
+      <pre class='term'>$ conjur policy load --as-group pcf-admin-group pcf.yml</pre>
+
+    **For Open Source Conjur and Enterprise Conjur v5:**
+
+      For Conjur Enterprise v5 and Open Source, the recommendation is to store
+      the policy for resources and secrets outside of the service broker managed
+      policy branch.
+
+      To accomplish this with `my-app.yml`, first create a policy
+      branch, for example `apps`, and then load the app policy to that branch:
+
+      <pre class='term'>$ conjur policy load apps my-app.yml
+
+##### <a id="secrets.yml"></a>Example: secrets.yml
+
+The following example of a `secrets.yml` file describes several types of allowed entries.
+
+```
+DB_USERNAME: !var apps/my-app/db/username
+DB_PASSWORD: !var apps/my-app/db/password
+REGION: us-east-1
+SSL_CERT: !var:file apps/my-app/ssl/certs/private
+```
+
+* Lines 1 and 2 specify fully qualified secret IDs. In this case, assume that a `my-app` policy was loaded into the `apps` policy. Each secret ID is given by the full path to the secret in Conjur, using the `apps` policy as the first component, followed by other IDs in the policy hierarchy.
+* Line 3 specifies a literal string value for the secret.
+* Line 4 specifies a fully qualified secret ID, and indicates that the value of the secret should be written to a temp file and `SSL_CERT` should be set to the temp file path.
+
+In the context of a PCF environment, the above example could produce the following results, with the first two values and the contents of the file retrieved from Conjur:
+
+```
+DB_USERNAME: AKIAI44QH8DHBEXAMPLE
+DB_PASSWORD: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
+REGION: us-east-1
+SSL_CERT: pcf/tmp/ssl-cert.pem
+```
+
+For more information about syntax and options for a `secrets.yml` file, see the `secrets.yml` section in the [Summon documentation](https://cyberark.github.io/summon/).
+
+##### Example: my-app.yml
+
+The following example shows a Conjur application policy declaring two secrets as variables for Conjur to manage and a group with access to those secrets.
+
+```
+- !policy
+  id: my-app
+  body:
+    - &variables
+      - !variable db/username
+      - !variable db/password
+
+    - !group secrets-users
+
+    # secrets-users can read and execute
+    - !permit
+      resource: *variables
+      privileges: [ read, execute ]
+      role: !group secrets-users
+```
+
+Values can be stored in these variables using the Conjur CLI, for example:
+
+```
+$ conjur variable values add "my-app/db/username" "My username value"
+Value added
+```
+
+#### <a id="create-service"></a> Step 2: Create a Service Instance
+
+In the PCF space where you intend to deploy the application, create a service instance.
+
+<pre class='term'>$ cf create-service cyberark-conjur community conjur</pre>
+
+In the command above:
+
+* The service-name is `cyberark-conjur`.
+* There is a single free service plan called `community`.
+* For convenience, you may use the same instance-name (e.g. `conjur`) in multiple PCF spaces,
+  so that the same application manifest works in all spaces. The instance name may be any
+  value you choose, and does not have to be `conjur`, but must match the service name you
+  bind applications in that space to.
+
+If you do not yet have a space for the application, you may create a one with:
+
+```
+cf create-space "My Space"
+```
+
+And then target the space with:
+
+```
+cf target -s "My Space"
+```
+
+#### <a id="permit-org-space"></a> Step 3: Permit Secret Access by Org and Space (Conjur Open Source and Conjur EE v5+ only)
+
+Adding a service instance to a space automatically creates resources within Conjur
+to allow privileging all of the apps in that org or space to access a secret in Conjur. These
+resources are Conjur layers named using the Globally Unique Identifiers (GUIDs) for the Org and
+Space.
+
+The Org and Space GUIDs may be retrieved from CloudFoundry using the `cf` CLI tool. For example:
+```
+$ cf org --guid my-org
+8f366b77-d826-4522-8cc6-261bf9b02cba
+
+$ cf space --guid my-space
+4b02b69c-ba35-4069-b634-ded5644740c9
+```
+
+If the Service Broker policy branch is `pcf/production`, the org and space layers
+may be used to access variables in Conjur policy. For example:
+
+```
+   # org-space-entitlements.yml
+
+   # Entitle all applications in my-org
+   - !grant
+     role: !group my-app/secrets-users
+     member: !layer /pcf/production/8f366b77-d826-4522-8cc6-261bf9b02cba
+
+   # Entitle all applications in my-space
+   - !grant
+     role: !group my-app/secrets-users
+     member: !layer /pcf/production/8f366b77-d826-4522-8cc6-261bf9b02cba/4b02b69c-ba35-4069-b634-ded5644740c9
+```
+
+This can then be loaded into conjur with:
+
+```
+conjur policy load root org-space-entitlements.yml
+```
+
+#### <a id="edit-manifest"></a> Step 4: Edit Application Manifest
+
+Add the instance-name from the previous step to the list of services in the application manifest (if you are using a manifest). If you are using the Conjur Summon buildpack, it must also be specified in the manifest.
+
+For example:
+
+```
+applications:
+ - name: my-app
+   services:
+   - conjur
+   buildpacks:
+   - conjur_buildpack
+   - ... other buildpacks
+```
+
+More information on using the Conjur Summon buildpack [can be found here](https://github.com/cyberark/cloudfoundry-conjur-buildpack/blob/master/README.md).
+
+#### <a id="push-app"></a> Step 5: Push Application to PCF Space
+
+Target your desired orgs and spaces and push the application and its associated files.
+
+<pre class='term'>cf push ...</pre>
+
+If you're using Conjur EE v5+ or Conjur OSS v1+ and you're entitling your applications
+to access secrets in Conjur at the org or space level, then you're done!
+
+If you plan to have Conjur secrets entitled specifically to this application, use the
+`--no-start` option to avoid starting the application before it has the privileges it needs.

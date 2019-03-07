@@ -1,0 +1,188 @@
+---
+title: Upgrading CyberArk Conjur Service Broker for PCF
+owner: Partners
+---
+
+This topic explains how to upgrade the CyberArk Conjur Service Broker for Pivotal Cloud Foundry (PCF) tile.
+
+## <a id="upgrade"></a> Upgrade CyberArk Conjur Service Broker for PCF
+
+Upgrading the CyberArk Conjur Service Broker for the PCF tile requires the same steps
+you ran in the Ops Manager when you first installed the tile. Your configuration
+settings migrate to the new version when you add the upgrade tile to the Ops Manager.
+
+1. Review the Release Notes for the version you are upgrading to, also check for any [version specific
+   upgrade instructions below](#version-notes).
+
+2. Download the desired tile version from Pivotal Network.
+
+3. Open the Ops Manager Dashboard and select **Import a Product** to upload the new tile file.
+
+4. Under the **Import a Product** button, click the **+** next to **CyberArk Conjur Service
+   Broker for PCF**. This adds the updated tile to your Ops Manager staging area.
+
+5. Click the **CyberArk Conjur Service Broker for PCF** tile to review the configuration settings. Click **Save**
+   on any tabs where you modify the settings.
+
+6. Open the Ops Manager Dashboard and click **Review Pending Changes** and **Apply Changes**.
+
+## <a id="version-notes"></a> Version Specific Upgrade Instructions
+
+### From 0.3.3 to 1.0.0
+
+#### Before Upgrading
+
+**(Required) Rename Service Broker**
+
+Before you upgrade the tile version from 0.3.3 to 1.0.0 in the Ops Manager, you must
+rename the existing service broker and service broker application in PCF. This is
+accomplished with the these steps:
+
+> **Note**: These steps require the CloudFoundry CLI, `cf`.
+
+1. Target the CyberArk Conjur space:
+
+    ```
+    cf target -o cyberark-conjur-org -s cyberark-conjur-space
+    ```
+
+2. Rename the service broker:
+
+    ```
+    cf rename-service-broker conjur_service_broker conjur-service-broker
+    ```
+
+3. Rename the service broker application:
+
+    ```
+    cf rename conjur_service_broker-0.3.3 conjur-service-broker-0.3.3
+    ```
+
+#### After Upgrading
+
+**(Optional) Update Existing Apps with the Conjur Buildpack**
+
+Version 1.0.0 updates the Conjur Buildpack to version 2.0.0. This version changes the buildpack
+type from a decorator buildpack to a supply buildpack, making it easier to use
+alongside other existing buildpacks. This will likely require updating how
+your applications include and use the buildpack. More information about using the Conjur Buildpack
+[can be found here](https://github.com/cyberark/cloudfoundry-conjur-buildpack/blob/master/README.md).
+
+> **Note:** Applications already running will continue to function until the app
+> is either pushed (`cf push`) or restaged (`cf restage`). At that point the buildpack
+> must be updated.
+
+To update a PCF application to use the new CyberArk Conjur Supply Buildpack, you
+must either add it to the application's manifest, or include the buildpack in the
+`cf push` command when deploying the application.
+
+- To add the buildpack to the application's manifest file, add the `conjur_buildpack`
+  to your `buildpacks` section, before the final or primary application buildpack.
+  For example:
+
+    ```
+    applications:
+    - name: my-app
+      services:
+      - conjur
+      buildpacks:
+      - conjur_buildpack
+      - ruby_buildpack
+    ```
+
+- To add the buildpack to the `cf push` command, include the argument `-b conjur_buildpack`
+  prior to the final or primary application buildpack. For example:
+  
+    ```
+    cf push my-app -b conjur_buildpack ... -b final_buildpack
+    ```
+
+<br/>
+**(Optional) Delete Meta Buildpack**
+
+The Conjur Buildpack version 1.0.0 used a Meta Buildpack which is no longer required by
+the Conjur Buildpack version 2.0.0. However, this buildpack is not automatically removed
+in the Ops Manager upgrade.
+
+To remove it it, use the command:
+
+```
+cf delete-buildback meta_buildpack
+```
+
+<br/>
+**(Optional) Enable Org/Space Permissions in Existing Spaces**
+
+Any Spaces where a Conjur service instance is already provisioned will not be automatically
+upgraded to support the new Org and Space entitlements, and need to be manually provisioned.
+
+> **Note:** Existing application entitlements will continue to function without this step.
+> New applications, however, will not be able to bind with the Conjur service without this
+> provisioning step.
+
+To provision an existing Space with a Conjur service instance, follow these steps:
+
+1. Target the desired space:
+
+    ```
+    cf target -o "my-org" -s "my-space"
+    ```
+
+2. Create a new conjur service instance:
+
+    > **Note:** This step causes the service broker to initialize the Org and Space
+    > policy branches and Conjur layers for entitlement at the Org and Space level.
+
+    ```
+    cf create-service cyberark-conjur community conjur-provision
+    ```
+
+3. Clean up and remove the provisioning service instance:
+
+    ```
+    cf delete-service conjur-provision
+    ```
+
+ Additionally, any new applications in an
+existing space will fail to bind to thte Conjur service without this provisioning step.
+
+To migrate existing spaces to the new Org and Spa
+
+<br/>
+**(Optional) Re-Bind Existing Applications to Conjur**
+
+Applications bound to Conjur using version 0.3.3 of Cyberark Conjur Service Broker for PCF
+do not automatically re-bind to the Conjur service and be given new host IDs during the 
+upgrade. This means existing applications do not inherit the Org and Space permissions
+by default.
+
+To re-issue an existing applications host ID, the application must be rebound to the Conjur
+service. To accomplish this:
+
+1. Target the space where your application is deploy. For example:
+
+    ```
+    cf target -o "my-org" -s "my-space"
+    ```
+
+2. Unbind the application from the Conjur service:
+
+    ```
+    cf unbind-service [app-name] [conjur-service-instance-name]
+    ```
+
+3. Bind the application back to the Conjur service:
+
+    > **Warning:** This issues a **NEW** host ID to the application. So any secret
+    > entitlements specific to the application must be granted again in Conjur policy
+    > to the new host id.
+
+    ```
+    cf unbind-service [app-name] [conjur-service-instance-name]
+    ```
+
+    The new host ID for the application can be obtained with the command:
+
+    ```
+    $ cf env [app-name] | grep authn_login | awk '{print $NF}' | sed 's/host.*\///g; s/"//g; s/,$//g'
+    ```
