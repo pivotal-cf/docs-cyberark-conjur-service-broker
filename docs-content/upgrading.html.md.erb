@@ -28,6 +28,51 @@ settings migrate to the new version when you add the upgrade tile to the Ops Man
 
 ## <a id="version-notes"></a> Version Specific Upgrade Instructions
 
+### From 1.0.0 to 1.1.0
+
+#### After Upgrading
+
+Version 1.1.0 introduces the option to create space-scoped host identities rather
+than application specific host identities. These identities are created when the
+service instance is created in a space. 
+
+To use space host identities in a space that already has a Conjur service instance
+provisioned, you must first remove and re-create the Conjur Service instance in that space.
+
+This is accomplished with these steps:
+
+> **Note**: These steps require the CloudFoundry CLI, `cf`.
+
+1. Target the desired org and space
+
+    ```
+    cf target -o my-org -s my-space
+    ```
+
+2. Un-bind each application from the Conjur service
+
+    ```
+    cf unbind-service my-app conjur
+    ```
+
+3. Remove the Conjur service instance from the space
+
+    ```
+    cf delete-service conjur
+    ```
+
+4. Re-create the Conjur service instance
+
+    ```
+    cf create-service cyberark-conjur community conjur
+    ```
+
+5. Re-bind each application to the Conjur service
+   
+   ```
+   cf bind-service my-app conjur
+   ```
+
 ### From 0.3.3 to 1.0.0
 
 #### Before Upgrading
