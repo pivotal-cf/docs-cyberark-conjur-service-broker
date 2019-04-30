@@ -83,38 +83,38 @@ This tab configures communication between the Service Broker and a Conjur applia
     When an application is bound to the Conjur service, it receives an identity in Conjur
     and credentials to authenticate to Conjur.
     <br/><br/>
-    The service broker may be configured to either create a single Conjur identity shared by
+    Configure the service broker to either create a single Conjur identity shared by
     all applications in a space, or to create a Conjur identity for each application
     individually.
     <br/><br/>
     In PCF version 2.0+, when the service broker creates the space or app identity, it
     automatically adds it to Conjur Layers representing the `Organization`
-    and `Space` where the application is deployed. These layers may be used to control secret
-    access at the org or space level, rather than the application host itself.
+    and `Space` where the application is deployed. Use these layers to control secret
+    access at the org or space level, instead of the application host itself.
     <br/><br/>
 
     **Space-scoped Identity**
     <br/>
-    When **Enable Spaced-scoped App Identities** is checked, the service broker creates a 
-    space-wide Conjur Host when a service instance is created in a space. When an application
+    If **Enable Spaced-scoped App Identities** option is selected, when a service instance is
+    created in a space, the service broker creates a space-wide Conjur Host. When an application
     is bound to the service, the service broker gives it the credentials of the space identity,
     rather than create a new host identity for each application.
     <br/><br/>
-    The advantage to this is the bind operation only requires access to a Conjur follower and
+    The advantage to this approach being, the bind operation only requires access to a Conjur follower and
     not the Conjur master. This promotes high-availability and scalability of app binding and secret
     retrieval.
     <br/><br/>
-    When using space host identities, only the org and space layers should be used for permitting
+    If you use space host identities, only use the org and space layers to permit
     access to secrets. More information on this is available [in the Using guide.](using.html#permit-org-space)
     <br/><br/>
     
     **Application-scoped Identity**
     <br/>
-    When **Enable Spaced-scoped App Identities** is not checked, the service broker creates a new
-    Conjur host identity for each application bound to the service. This requires that the service
-    broker is able to communicate with the Conjur master for each bind request.
+    If **Enable Spaced-scoped App Identities** option is not selected, the service broker creates a new
+    Conjur host identity for each application bound to the service requiring the service
+    broker to communicate with the Conjur master for each bind request.
     <br/><br/>
-    The advantage to this is finer-grained access control and audit logs in Conjur.
+    The advantage to this approach is finer-grained access control and audit logs in Conjur.
     <br/><br/>
     Application host identities may be permitted to access secrets at the [org and space level](using.html#permit-org-space)
     or at the [individual application level.](using.html#entitle-application)
