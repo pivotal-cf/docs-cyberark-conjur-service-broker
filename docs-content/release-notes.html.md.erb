@@ -1,9 +1,9 @@
 ---
-title: Release Notes for CyberArk Conjur Service Broker for PCF (Beta)
+title: Release Notes for CyberArk Conjur Service Broker for Pivotal Platform (Beta)
 owner: Partners
 ---
 
-These are release notes for CyberArk Conjur Service Broker for PCF (Beta).
+These are release notes for CyberArk Conjur Service Broker for Pivotal Platform (Beta).
 
 ## <a id="ver"></a> v1.1.1
 
@@ -21,7 +21,7 @@ Features in this release:
 
 * Added space-scoped host identities
   <br/>
-  PCF operators now have the option to issue a shared Conjur identity
+  Pivotal Platform operators now have the option to issue a shared Conjur identity
   for all applications in a space, or an identity for each application
   individually. [Read more about this here.](installing.html#space-scoped-identity)
 
@@ -33,7 +33,7 @@ Features in this release:
 
 * Simplified policy management and deployment:
   - Conjur Service Broker automatically creates policy branches in Conjur
-    to mirror org and space structure in PCF during the service instance provisioning. 
+    to mirror org and space structure in Pivotal Platform during the service instance provisioning. 
   - Entitlements can be added to orgs and spaces.
   - Applications are auto-enrolled into org and space layers on bind.
   
@@ -104,7 +104,7 @@ Buildpack installation does not function as expected. If you have installed this
 Features included in this release:
 
 * Added support for Conjur Enterprise (v4).
-* Added support for a PCF-specific namespace.
+* Added support for a Pivotal Platform-specific namespace.
 
 
 
@@ -117,9 +117,9 @@ Known issues in this release: No known issues.
 
 Features included in this release:
 
-* Service Broker provides an interface between PCF applications and an existing Conjur appliance.
+* Service Broker provides an interface between Pivotal Platform applications and an existing Conjur appliance.
 * Buildpack installs Summon tool.
-* Secrets defined to Summon in a secrets.yml file are obtained from Conjur and injected into the PCF environment.
+* Secrets defined to Summon in a secrets.yml file are obtained from Conjur and injected into the Pivotal Platform environment.
 * Initial Private Beta Release.
 
 
