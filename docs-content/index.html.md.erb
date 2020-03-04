@@ -1,37 +1,37 @@
 ---
-title: CyberArk Conjur Service Broker for Pivotal Platform (Beta)
+title: CyberArk Conjur Service Broker for VMware Tanzu (Beta)
 owner: Partners
 ---
 
-<p class='note warning'><strong>Warning:</strong> The CyberArk Conjur Service Broker for Pivotal Platform tile is currently in beta and is intended for evaluation and test purposes only. Do not use this product in a Pivotal Platform production environment.</p>
+<p class='note warning'><strong>Warning:</strong> The CyberArk Conjur Service Broker for VMware Tanzu tile is currently in beta and is intended for evaluation and test purposes only. Do not use this product in a VMware Tanzu production environment.</p>
 
-This documentation describes the CyberArk Conjur Service Broker for Pivotal Platform. This Service Broker provides Conjur machine identity management and authentication, policy-based authorization, and other Conjur services to your Pivotal Platform applications and microservices.
+This documentation describes the CyberArk Conjur Service Broker for VMware Tanzu. This Service Broker provides Conjur machine identity management and authentication, policy-based authorization, and other Conjur services to your VMware Tanzu applications and microservices.
 
 
 ## <a id='overview'></a>Overview
 
-The CyberArk Conjur Service Broker for Pivotal Platform registers a service broker with Pivotal Platform and exposes its service plans on the
+The CyberArk Conjur Service Broker for VMware Tanzu registers a service broker with VMware Tanzu and exposes its service plans on the
 Marketplace. Developers can then create applications that access a Conjur instance. The Service Broker provides the
-interface between your Pivotal Platform applications and a Conjur instance.
+interface between your VMware Tanzu applications and a Conjur instance.
 
-The CyberArk Conjur Service Broker for Pivotal Platform installs a buildpack that leverages the [Conjur Summon](https://cyberark.github.io/summon/)
-tool. Summon fetches secrets from Conjur using the binding ID from your Pivotal Platform service as the unique application identity.
+The CyberArk Conjur Service Broker for VMware Tanzu installs a buildpack that leverages the [Conjur Summon](https://cyberark.github.io/summon/)
+tool. Summon fetches secrets from Conjur using the binding ID from your VMware Tanzu service as the unique application identity.
 
 
 ## <a id='features'></a>Key Features
 
-CyberArk Conjur Service Broker for Pivotal Platform includes the following key features:
+CyberArk Conjur Service Broker for VMware Tanzu includes the following key features:
 
-* After you configure the tile and bind applications to service instances, your Pivotal Platform applications, containers, and microservices assume a host identity in Conjur. This identity enables secure access to secrets stored in Conjur.
-* If you have an existing Conjur instance, you can grant privileges to Pivotal Platform applications to access the existing Conjur secrets through Conjur policy.
-* Conjur integrates easily into the Pivotal Platform environment and the Pivotal Platform developer workflow.
-* The strong authentication model provided by Conjur is available to Pivotal Platform applications.
-* The Conjur role-based policy model for authorizations applies to applications running in Pivotal Platform.
-* Access to secrets is configurable at the Pivotal Platform application level, making it easy to ensure least privilege access.
+* After you configure the tile and bind applications to service instances, your VMware Tanzu applications, containers, and microservices assume a host identity in Conjur. This identity enables secure access to secrets stored in Conjur.
+* If you have an existing Conjur instance, you can grant privileges to VMware Tanzu applications to access the existing Conjur secrets through Conjur policy.
+* Conjur integrates easily into the VMware Tanzu environment and the VMware Tanzu developer workflow.
+* The strong authentication model provided by Conjur is available to VMware Tanzu applications.
+* The Conjur role-based policy model for authorizations applies to applications running in VMware Tanzu.
+* Access to secrets is configurable at the VMware Tanzu application level, making it easy to ensure least privilege access.
 
 ## <a id="snapshot"></a>Product Snapshot
 
-The following table provides version and version-support information about CyberArk Conjur Service Broker for Pivotal Platform.
+The following table provides version and version-support information about CyberArk Conjur Service Broker for VMware Tanzu.
 
 <table class="nice">
     <th>Element</th>
@@ -54,7 +54,7 @@ The following table provides version and version-support information about Cyber
         <td>v2.2.x, v2.3.x, v2.4.x, and v2.5.x</td>
     </tr>
     <tr>
-        <td>Compatible Pivotal Application Service version(s)</td>
+        <td>Compatible Tanzu Application Service version(s)</td>
         <td>v2.2.x, v2.3.x, v2.4.x, and v2.5.x</td>
     </tr>
     <tr>
@@ -69,15 +69,15 @@ The following table provides version and version-support information about Cyber
 
 ## <a id="reqs"></a>Requirements
 
-CyberArk Conjur Service Broker for Pivotal Platform has the following requirements:
+CyberArk Conjur Service Broker for VMware Tanzu has the following requirements:
 
-+ **You must have an existing Conjur instance installed.  The Conjur instance may be external to the Pivotal Platform environment. Supported versions are:**
++ **You must have an existing Conjur instance installed.  The Conjur instance may be external to the VMware Tanzu environment. Supported versions are:**
   * Conjur Enterprise (v4.9.12.0 and later)
       * Use v4.9.17.0 or later to search for CF hosts in the Conjur UI
   * Conjur Open Source (v1.0 and later)
       * Hosted Conjur is a hosted version of Open Source Conjur. You can quickly get a hosted Conjur instance running for evaluation purposes. Visit the [hosted Conjur page](https://www.conjur.org/get-started/try-conjur.html) to sign up.
 
-+ **To configure the Pivotal Platform tile, you must know the following information about your Conjur installation:**
++ **To configure the VMware Tanzu tile, you must know the following information about your Conjur installation:**
     <table class="nice">
         <tr>
             <td>
@@ -101,9 +101,9 @@ CyberArk Conjur Service Broker for Pivotal Platform has the following requiremen
                 **Conjur Host Id for Service Broker**
             </td>
             <td>
-                Valid Conjur identity for a host that has `update` and `create` privileges on Pivotal Platform-related
+                Valid Conjur identity for a host that has `update` and `create` privileges on VMware Tanzu-related
                 Conjur policy. The Service Broker uses these credentials to add and remove host identities
-                as you deploy and remove Pivotal Platform applications. See [Recommendations](#recommendations).
+                as you deploy and remove VMware Tanzu applications. See [Recommendations](#recommendations).
             </td>
         </tr>
         <tr>
@@ -116,11 +116,11 @@ CyberArk Conjur Service Broker for Pivotal Platform has the following requiremen
         </tr>
         <tr>
             <td>
-                **Pivotal Platform Conjur Policy Branch ID**<br/>
+                **VMware Tanzu Conjur Policy Branch ID**<br/>
                 (Recommended)
             </td>
             <td>
-                For production Conjur appliances, CyberArk strongly recommends a Conjur policy dedicated to Pivotal Platform;
+                For production Conjur appliances, CyberArk strongly recommends a Conjur policy dedicated to VMware Tanzu;
                 otherwise, the Conjur root policy is the default. See [Recommendations](#recommendations) for more information.
             </td>
         </tr>
@@ -131,7 +131,7 @@ CyberArk Conjur Service Broker for Pivotal Platform has the following requiremen
                 (Optional)
             </td>
             <td>
-                If deploying a cluster in an HA configuration, you can specify a URL for Pivotal Platform apps to connect to
+                If deploying a cluster in an HA configuration, you can specify a URL for VMware Tanzu apps to connect to
                 a Conjur follower to retrieve secret values rather than through the Conjur master. Cyberark strongly
                 recommends that you supply a load balanced follower address to support easier scalability.
             </td>
@@ -173,11 +173,11 @@ $ openssl s_client -showcerts -servername [CONJUR_DNS_NAME] \
 
 ## <a id="recommendations"></a>Recommendations
 
-### Create a Dedicated Conjur Policy for Pivotal Platform
+### Create a Dedicated Conjur Policy for VMware Tanzu
 
-CyberArk strongly recommends that you create a Conjur policy dedicated to Pivotal Platform before installing the Pivotal Platform tile.
+CyberArk strongly recommends that you create a Conjur policy dedicated to VMware Tanzu before installing the VMware Tanzu tile.
 This policy should include a unique identifier for the foundation (e.g. `production`) to make managing Conjur
-policy easier across multiple Pivotal Platform installation.
+policy easier across multiple VMware Tanzu installation.
 
 The syntax for defining a Conjur Policy with ID `pcf/production` is as follows:
 
@@ -190,23 +190,23 @@ The syntax for defining a Conjur Policy with ID `pcf/production` is as follows:
 ```
 
 This can be loaded into the root policy or any desired Conjur policy branch. Host identities for
-Pivotal Platform-deployed applications will be loaded into the `pcf/production` Conjur policy branch when the
+VMware Tanzu-deployed applications will be loaded into the `pcf/production` Conjur policy branch when the
 applications are bound to a Conjur service instance.
 
-A dedicated Conjur policy for Pivotal Platform supports least privilege principles in the following ways:
+A dedicated Conjur policy for VMware Tanzu supports least privilege principles in the following ways:
 
-* The secrets, host identities, and access control policies for your Pivotal Platform-deployed applications are isolated from other resources stored in Conjur.
-* Conjur access privileges required by the Service Broker, DevOps teams, and your applications can be limited in scope to the dedicated Conjur policy for Pivotal Platform.
-* You can give a limited set of Conjur users access to the dedicated Conjur policy for Pivotal Platform, with even finer-grained permissions possible within the Pivotal Platform policy itself.
-* For Conjur Enterprise (v4), you can define the host factory layer in the dedicated Conjur policy for Pivotal Platform, rather than in the root policy.
+* The secrets, host identities, and access control policies for your VMware Tanzu-deployed applications are isolated from other resources stored in Conjur.
+* Conjur access privileges required by the Service Broker, DevOps teams, and your applications can be limited in scope to the dedicated Conjur policy for VMware Tanzu.
+* You can give a limited set of Conjur users access to the dedicated Conjur policy for VMware Tanzu, with even finer-grained permissions possible within the VMware Tanzu policy itself.
+* For Conjur Enterprise (v4), you can define the host factory layer in the dedicated Conjur policy for VMware Tanzu, rather than in the root policy.
 
-When creating the dedicated Conjur policy for Pivotal Platform, consider the following:
+When creating the dedicated Conjur policy for VMware Tanzu, consider the following:
 
 * The Service Broker requires `create` and `update` privileges on the policy to add and remove host identities. Members of the group that owns the policy have those privileges.
-* Pivotal Platform DevOps personnel need access to Conjur to declare application secrets and grant privileges to the applications to access those secrets.
-* For Conjur Enterprise (v4), a host factory is required. Both the ID of the layer and the host factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf/production-apps` is used in the policy example shown below where the dedicated policy for Pivotal Platform is called `pcf/production`.
+* VMware Tanzu DevOps personnel need access to Conjur to declare application secrets and grant privileges to the applications to access those secrets.
+* For Conjur Enterprise (v4), a host factory is required. Both the ID of the layer and the host factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf/production-apps` is used in the policy example shown below where the dedicated policy for VMware Tanzu is called `pcf/production`.
 
-To create a dedicated Conjur policy for Pivotal Platform, do the following:
+To create a dedicated Conjur policy for VMware Tanzu, do the following:
 
 #### Step 1
 
@@ -235,7 +235,7 @@ Create a policy using the following example as a guide. Save the policy as a YAM
   id: pcf                            # Policy ID does not have to be pcf
   body:
   - !policy
-    id: production                   # Multiple Pivotal Platform Foundations may be identified using
+    id: production                   # Multiple VMware Tanzu Foundations may be identified using
                                      # a sub-policy branch, e.g. "production".
     owner: !group /pcf-admin-group   # Owners have complete privileges on the policy
 
@@ -255,7 +255,7 @@ This policy file creates a `host/pcf-service-broker` host that can be used as th
 in the tile configuration. The `pcf-service-broker` host is a member of the `pcf-admin-group` group, which
 owns the `pcf/production` policy, so it has `create` and `update` privileges on that policy as required.
 
-The Pivotal Platform policy has a `pcf/production-apps` layer and corresponding host factory. If using Conjur v4, application
+The VMware Tanzu policy has a `pcf/production-apps` layer and corresponding host factory. If using Conjur v4, application
 hosts will be added to the `pcf/production-apps` layer via the `pcf-apps` host factory when the application is
 bound to a Conjur service instance.
 
@@ -289,17 +289,17 @@ Load the policy into Conjur as follows (in this example, we are loading it into 
 <pre class='term'>$ conjur policy load root your-pcf-policy-file.yml</pre>
 
 Loading this policy the first time will output the API key for the `pcf-service-broker` host. Save
-this key to use when configuring the Pivotal Platform tile below.
+this key to use when configuring the VMware Tanzu tile below.
 
 #### Step 3
 
-In the CyberArk Conjur Service Broker for Pivotal Platform tile configuration:
+In the CyberArk Conjur Service Broker for VMware Tanzu tile configuration:
 
-* For **Pivotal Platform Conjur Policy Branch ID**, use the fully-qualified ID of the dedicated Conjur policy for Pivotal Platform
+* For **VMware Tanzu Conjur Policy Branch ID**, use the fully-qualified ID of the dedicated Conjur policy for VMware Tanzu
   (`pcf/production` in the above example). 
   
 * For **Conjur Login**, use a Conjur host who is a member of the
-  Conjur group that owns the Pivotal Platform policy (`host/pcf-service-broker` in the example above). The host also
+  Conjur group that owns the VMware Tanzu policy (`host/pcf-service-broker` in the example above). The host also
   needs to be permitted to read its own annotations.
 
 * For **Conjur API Key**, use that host's API key. The admin who created the role can retrieve the value with this command:
@@ -308,12 +308,12 @@ In the CyberArk Conjur Service Broker for Pivotal Platform tile configuration:
 
 ### Using the Default Root Policy
 
-If you decide to leave the **Pivotal Platform Conjur Policy Namespace** blank in the tile configuration (that is, you choose to use the default root policy), consider the following:
+If you decide to leave the **VMware Tanzu Conjur Policy Namespace** blank in the tile configuration (that is, you choose to use the default root policy), consider the following:
 
 * You are not following least privilege best practice.
 * The Conjur host identity that you provide on tile installation must have `create` and `update` privileges on the root policy, which means that it will be privileged to edit _any policy in your Conjur installation_.
-* The Service Broker will add host identities for your Pivotal Platform applications to the root policy.
-* The Pivotal Platform DevOps teams will be altering policy files in the root policy.
+* The Service Broker will add host identities for your VMware Tanzu applications to the root policy.
+* The VMware Tanzu DevOps teams will be altering policy files in the root policy.
 * For integration with Conjur v4, a Host Factory named `apps` is required. Add the following layer declaration to the root policy:
 
     ```
@@ -332,7 +332,7 @@ There are no known limitations.
 ## <a id="feedback"></a>Feedback
 
 If you have a feature request, questions, or information about a bug, please email
-[Pivotal Platform Feedback](mailto:pivotal-cf-feedback@pivotal.io) list or send an email to [CyberArk Support](mailto:support@cyberark.com).
+[VMware Tanzu Feedback](mailto:pivotal-cf-feedback@pivotal.io) list or send an email to [CyberArk Support](mailto:support@cyberark.com).
 
 
 ## <a id='license'></a>License

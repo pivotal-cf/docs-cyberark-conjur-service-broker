@@ -1,13 +1,13 @@
 ---
-title: Upgrading CyberArk Conjur Service Broker for Pivotal Platform
+title: Upgrading CyberArk Conjur Service Broker for VMware Tanzu
 owner: Partners
 ---
 
-This topic explains how to upgrade the CyberArk Conjur Service Broker for Pivotal Platform tile.
+This topic explains how to upgrade the CyberArk Conjur Service Broker for VMware Tanzu tile.
 
-## <a id="upgrade"></a> Upgrade CyberArk Conjur Service Broker for Pivotal Platform
+## <a id="upgrade"></a> Upgrade CyberArk Conjur Service Broker for VMware Tanzu
 
-Upgrading the CyberArk Conjur Service Broker for the Pivotal Platform tile requires the same steps
+Upgrading the CyberArk Conjur Service Broker for the VMware Tanzu tile requires the same steps
 you ran in the Ops Manager when you first installed the tile. Your configuration
 settings migrate to the new version when you add the upgrade tile to the Ops Manager.
 
@@ -19,9 +19,9 @@ settings migrate to the new version when you add the upgrade tile to the Ops Man
 3. Open the Ops Manager Dashboard and select **Import a Product** to upload the new tile file.
 
 4. Under the **Import a Product** button, click the **+** next to **CyberArk Conjur Service
-   Broker for Pivotal Platform**. This adds the updated tile to your Ops Manager staging area.
+   Broker for VMware Tanzu**. This adds the updated tile to your Ops Manager staging area.
 
-5. Click the **CyberArk Conjur Service Broker for Pivotal Platform** tile to review the configuration settings. Click **Save**
+5. Click the **CyberArk Conjur Service Broker for VMware Tanzu** tile to review the configuration settings. Click **Save**
    on any tabs where you modify the settings.
 
 6. Open the Ops Manager Dashboard and click **Review Pending Changes** and **Apply Changes**.
@@ -80,7 +80,7 @@ To remove and re-create the Conjur Service instance, do the following:
 **(Required) Rename Service Broker**
 
 Before you upgrade the tile version from 0.3.3 to 1.0.0 in the Ops Manager, you must
-rename the existing service broker and service broker application in Pivotal Platform. This is
+rename the existing service broker and service broker application in VMware Tanzu. This is
 accomplished with the these steps:
 
 > **Note**: These steps require the CloudFoundry CLI, `cf`.
@@ -117,7 +117,7 @@ your applications include and use the buildpack. More information about using th
 > is either pushed (`cf push`) or restaged (`cf restage`). At that point the buildpack
 > must be updated.
 
-To update a Pivotal Platform application to use the new CyberArk Conjur Supply Buildpack, you
+To update a VMware Tanzu application to use the new CyberArk Conjur Supply Buildpack, you
 must either add it to the application's manifest, or include the buildpack in the
 `cf push` command when deploying the application.
 
@@ -196,7 +196,7 @@ To migrate existing spaces to the new Org and Spa
 <br/>
 **(Optional) Re-Bind Existing Applications to Conjur**
 
-Applications bound to Conjur using version 0.3.3 of Cyberark Conjur Service Broker for Pivotal Platform
+Applications bound to Conjur using version 0.3.3 of Cyberark Conjur Service Broker for VMware Tanzu
 do not automatically re-bind to the Conjur service and be given new host IDs during the 
 upgrade. This means existing applications do not inherit the Org and Space permissions
 by default.

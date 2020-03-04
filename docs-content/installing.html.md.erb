@@ -1,21 +1,21 @@
 ---
-title: Installing and Configuring CyberArk Conjur Service Broker for Pivotal Platform
+title: Installing and Configuring CyberArk Conjur Service Broker for VMware Tanzu
 owner: Partners
 ---
 
 
-This topic describes how to install and configure CyberArk Conjur Service Broker for Pivotal Platform.
+This topic describes how to install and configure CyberArk Conjur Service Broker for VMware Tanzu.
 
-## <a id='install'></a>Install and Configure CyberArk Conjur Service Broker for Pivotal Platform
+## <a id='install'></a>Install and Configure CyberArk Conjur Service Broker for VMware Tanzu
 
-1. Download the CyberArk Conjur Service Broker for Pivotal Platform product file from <a href = "https://network.pivotal.io/products/cyberark-conjur/">Pivotal Network</a>.
+1. Download the CyberArk Conjur Service Broker for VMware Tanzu product file from <a href = "https://network.pivotal.io/products/cyberark-conjur/">Pivotal Network</a>.
 
 1. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file.
 
-1. Under the **Import a Product** button, click **+** next to the version number of CyberArk Conjur Service Broker for Pivotal Platform.
+1. Under the **Import a Product** button, click **+** next to the version number of CyberArk Conjur Service Broker for VMware Tanzu.
 This adds the tile to your staging area.
 
-1. Click the newly added **CyberArk Conjur Service Broker for Pivotal Platform** tile.
+1. Click the newly added **CyberArk Conjur Service Broker for VMware Tanzu** tile.
 
 1. Click the **Settings** tab.
 
@@ -27,13 +27,13 @@ This adds the tile to your staging area.
 
 1. Click **Save**.
 
-1. Return to the Ops Manager Installation Dashboard and click **Apply changes** to apply the configuration changes and complete the installation of the CyberArk Conjur Service Broker for Pivotal Platform tile.
+1. Return to the Ops Manager Installation Dashboard and click **Apply changes** to apply the configuration changes and complete the installation of the CyberArk Conjur Service Broker for VMware Tanzu tile.
 
 1. Use `cf marketplace` to verify availability of the community service named `cyberark-conjur`.
 
 ### <a id='assign-az'></a>Assign AZs and Networks
 
-Choose appropriate values to configure where to deploy CyberArk Conjur Service Broker for Pivotal Platform.
+Choose appropriate values to configure where to deploy CyberArk Conjur Service Broker for VMware Tanzu.
 
 ### <a id='config-service-broker'></a>Service Broker Configuration
 
@@ -59,9 +59,9 @@ This tab configures communication between the Service Broker and a Conjur applia
   * **Conjur Login**:
     The fully-qualified ID of a Conjur host for the service broker.
     <br/><br/>
-    The Host must have `create` and `update` privileges on the dedicated Conjur policy for Pivotal Platform that you enter in the **Pivotal Platform Conjur Policy Branch ID** field. If you are not using a dedicated Conjur policy for Pivotal Platform, this login Host must have `create` and `update` privileges on the Conjur root policy.
+    The Host must have `create` and `update` privileges on the dedicated Conjur policy for VMware Tanzu that you enter in the **VMware Tanzu Conjur Policy Branch ID** field. If you are not using a dedicated Conjur policy for VMware Tanzu, this login Host must have `create` and `update` privileges on the Conjur root policy.
     <br/><br/>
-    This login is only used by the Service Broker to add and remove Hosts from Conjur policy as your applications are deployed to or removed from Pivotal Platform.
+    This login is only used by the Service Broker to add and remove Hosts from Conjur policy as your applications are deployed to or removed from VMware Tanzu.
     <br/><br/>
     This entry should be of the form `host/host-id`, where `host-id` is the fully-qualified Conjur Host ID (e.g. `host/pcf-service-broker`). The `host/` prefix indicates to the Conjur authenticator that these credentials belong to a Host, and not a User.
 
@@ -70,13 +70,13 @@ This tab configures communication between the Service Broker and a Conjur applia
     <br/><br/>
     If the Host's API key changes, update this field and click **Apply Changes** to continue using the Service Broker to bind applications. After binding, an application has its own credentials for connecting to the Conjur appliance.
     <br/><br/>
-    <p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to Pivotal Platform admins. They are not generally accessible to users in Pivotal Platform.</p>
+    <p class='note'><strong>Note:</strong> The Conjur Host credentials configured here are available only to VMware Tanzu admins. They are not generally accessible to users in VMware Tanzu.</p>
 
   * **Conjur Version**:
   Defaults to 5. Select 4 for Enterprise Conjur v4. Select 5 for Enterprise Conjur v5 or Open Source Conjur (including an evaluation Hosted Conjur).
 
-  * **Pivotal Platform Conjur Policy Branch ID**:
-  The fully-qualified Conjur Policy ID of the dedicated Conjur policy for Pivotal Platform that you created (e.g. `pcf/production`). Leave blank to default to the root policy (not recommended).
+  * **VMware Tanzu Conjur Policy Branch ID**:
+  The fully-qualified Conjur Policy ID of the dedicated Conjur policy for VMware Tanzu that you created (e.g. `pcf/production`). Leave blank to default to the root policy (not recommended).
 
   * <a name="space-scoped-identity"></a> **Enable Spaced-scoped App Identities**
     
@@ -87,7 +87,7 @@ This tab configures communication between the Service Broker and a Conjur applia
     all applications in a space, or to create a Conjur identity for each application
     individually.
     <br/><br/>
-    In Pivotal Platform version 2.0+, when the service broker creates the space or app identity, it
+    In VMware Tanzu version 2.0+, when the service broker creates the space or app identity, it
     automatically adds it to Conjur Layers representing the `Organization`
     and `Space` where the application is deployed. Use these layers to control secret
     access at the org or space level, instead of the application host itself.
@@ -149,13 +149,13 @@ The tile installs the Conjur Buildpack, which enables your applications to lever
 
 ### <a id='config-service-access'></a>Service Access
 
-If **Enable global access to plans of service Conjur** is checked, the Conjur service is available to all Pivotal Platform users, across all orgs and spaces.
+If **Enable global access to plans of service Conjur** is checked, the Conjur service is available to all VMware Tanzu users, across all orgs and spaces.
 
 To configure more precise access control, uncheck this option and use `cf enable-service-access` to specify which orgs and spaces can access the Conjur service.
 
 ### <a id='config-errands'></a>Errands
 
-The CyberArk Conjur Service Broker for Pivotal Platform tile does not add any errands.
+The CyberArk Conjur Service Broker for VMware Tanzu tile does not add any errands.
 
 ### <a id='config-resources'></a>Resource Config
 
