@@ -1,9 +1,7 @@
 ---
-title: CyberArk Conjur Service Broker for VMware Tanzu (Beta)
+title: CyberArk Conjur Service Broker for VMware Tanzu
 owner: Partners
 ---
-
-<p class='note warning'><strong>Warning:</strong> The CyberArk Conjur Service Broker for VMware Tanzu tile is currently in beta and is intended for evaluation and test purposes only. Do not use this product in a VMware Tanzu production environment.</p>
 
 This documentation describes the CyberArk Conjur Service Broker for VMware Tanzu. This Service Broker provides Conjur machine identity management and authentication, policy-based authorization, and other Conjur services to your VMware Tanzu applications and microservices.
 
@@ -51,11 +49,11 @@ The following table provides version and version-support information about Cyber
     </tr>
     <tr>
         <td>Compatible Ops Manager version(s)</td>
-        <td>v2.4.x, v2.5.x, v2.6.x, and v2.7.x</td>
+        <td>v2.5.x, v2.6.x, v2.7.x, and v2.8.x</td>
     </tr>
     <tr>
         <td>Compatible Tanzu Application Service version(s)</td>
-        <td>v2.4.x, v2.5.x, v2.6.x, and v2.7.x</td>
+        <td>v2.5.x, v2.6.x, v2.7.x, and v2.8.x</td>
     </tr>
     <tr>
         <td>BOSH stemcell version</td>
@@ -161,7 +159,7 @@ $ openssl s_client -showcerts -servername [CONJUR_DNS_NAME] \
 + **The Conjur Service Broker requires that each space have its own service instance.**
 
     Conjur Service instances may not be [shared across spaces](https://docs.cloudfoundry.org/devguide/services/sharing-instances.html).
-    In the interest of least privilege, a single Conjur service instance must be 
+    In the interest of least privilege, a single Conjur service instance must be
     provisioned in each space where it is needed, using:
 
     <pre class='term'>$ cf create-service cyberark-conjur community my-service-instance-name</pre>
@@ -244,7 +242,7 @@ Create a policy using the following example as a guide. Save the policy as a YAM
     body:
 
     # Layer name and host-factory name must be [policy-id]-apps
-    - !layer pcf/production-apps  
+    - !layer pcf/production-apps
 
     - !host-factory
       id: pcf/production-apps
@@ -296,8 +294,8 @@ this key to use when configuring the VMware Tanzu tile below.
 In the CyberArk Conjur Service Broker for VMware Tanzu tile configuration:
 
 * For **VMware Tanzu Conjur Policy Branch ID**, use the fully-qualified ID of the dedicated Conjur policy for VMware Tanzu
-  (`pcf/production` in the above example). 
-  
+  (`pcf/production` in the above example).
+
 * For **Conjur Login**, use a Conjur host who is a member of the
   Conjur group that owns the VMware Tanzu policy (`host/pcf-service-broker` in the example above). The host also
   needs to be permitted to read its own annotations.
