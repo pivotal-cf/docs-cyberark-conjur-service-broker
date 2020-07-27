@@ -13,7 +13,13 @@ You can push the same application to multiple spaces. After you prepare the appl
 
 The CyberArk Conjur Service Broker for PCF uses the Summon application included in the Conjur Buildpack by default to fetch secrets from the Conjur appliance and inject the values into your application's environment.
 
-The secrets, fetched at application startup, are available only to the application process (not to users), and are gone when the process exits.  Summon requires a `secrets.yml` file in the application's root folder.
+The secrets, fetched at application startup, are available only to the application process (not to 
+users), and are gone when the process exits.  Summon requires a `secrets.yml` file in the application's root folder.
+
+If your application requires the `secrets.yml` file to be placed in a non-root directory,
+the runtime location for `secrets.yml` can be configured by setting the 
+`SECRETS_YAML_PATH` environment variable for the Cloud Foundry application. You can find more
+ information on this in [Configuring the `secrets.yml` Location](#secrets-yaml-path).
 
 If your application uses another method to access secrets, such as Conjur API calls, you do not need a `secrets.yml` file.
 
@@ -210,3 +216,31 @@ to access secrets in Conjur at the org or space level, then you're done!
 
 If you plan to have Conjur secrets entitled specifically to this application, use the
 `--no-start` option to avoid starting the application before it has the privileges it needs.
+
+#### <a id="secrets-yaml-path"></a> Configuring the `secrets.yml` Location
+
+Some final buildpacks do not allow deploying the `secrets.yml` file to the application
+root directory at runtime. In this case, the runtime location of the `secrets.yml`
+file may be configured by setting the `SECRETS_YAML_PATH` environment variable to
+its relative path.
+
+This can be configured in the application's `manifest.yml`:
+
+```
+---
+applications:
+- name: my-app
+  services:
+  - conjur
+  buildpacks:
+  - conjur_buildpack
+  - php_buildpack
+  env:
+    SECRETS_YAML_PATH: lib/secrets.yml
+```
+
+Alternatively, this may be set using the Cloud Foundry CLI:
+```
+$ cf set-env {Application Name} SECRETS_YAML_PATH {Relative Path to secrets.yml}
+$ cf restage {Application Name}
+```
