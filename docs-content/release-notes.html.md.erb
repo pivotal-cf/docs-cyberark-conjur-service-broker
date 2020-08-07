@@ -5,6 +5,34 @@ owner: Partners
 
 These are release notes for CyberArk Conjur Service Broker for VMware Tanzu
 
+## <a id="ver"></a> v1.2.0
+
+**Release Date:** July 27, 2020
+
+Features in this release:
+
+* Improved service-broker validation and error handling
+  <br/>
+  - Service broker returns 404 when the org or space policy branches do not exist
+    as expected with a helpful error message, rather than returning 500.
+  - If a value is given to the `CONJUR_POLICY` environment variable, service-broker 
+    verifies that the given policy exists on the server, and provides a helpful error 
+    if it does not exist.
+
+* Expanded buildpack configuration capabilities 
+  <br/>
+  - The runtime location for `secrets.yml` can now be configured by setting the
+    `SECRETS_YAML_PATH` environment variable for the Cloud Foundry application.
+  - Buildpack supply step now scans build directory for candidate `secrets.yml` files,
+    and reports them to the buildpack deploy output during the supply phase. If unable to
+    locate any `secrets.yml` files, it will exit. 
+
+* The buildpack now properly reads only the Conjur credentials from VCAP_SERVICES. Previously, it   
+  could consume credentials for other services, if their field names exactly matched those used by 
+  Conjur (e.g. version is a very common field).
+
+Known issues in this release: No known issues.
+
 ## <a id="ver"></a> v1.1.1
 
 **Release Date:** June 21, 2019
