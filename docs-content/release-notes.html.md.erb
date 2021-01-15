@@ -37,7 +37,12 @@ Fixed issues in this release:
     We recommend all users update their buildpack version to at least v2.1.5;
     v2.1.6 is included in this tile release.
 
-Known issues in this release: No known issues.
+Known issues in this release:
+
+* Service Broker fails to install if using older versions of Ruby Buildpack
+  - When using Ruby Buildpack version 1.8.15 or older, the service broker will fail to install because the Ruby
+    version will default to 2.4.x.
+    [cyberark/conjur-service-broker#229](https://github.com/cyberark/conjur-service-broker/issues/229)
 
 ## <a id="ver"></a> v1.2.0
 
