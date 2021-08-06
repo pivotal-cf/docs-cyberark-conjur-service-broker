@@ -5,6 +5,48 @@ owner: Partners
 
 These are release notes for CyberArk Conjur Service Broker for VMware Tanzu
 
+## <a id="ver"></a> v1.3.0
+
+**Release Date:** August 9, 2021
+
+- CyberArk Conjur Service Broker - [v1.2.1](https://github.com/cyberark/conjur-service-broker/releases/v1.2.1)
+- CyberArk Conjur Buildpack - [v2.2.1](https://github.com/cyberark/cloudfoundry-conjur-buildpack/releases/v2.2.1)
+
+Features in this release:
+
+* Removed support for Conjur Enterprise v4
+  - We recommend migrating to Conjur Enterprise v11+ or Conjur OSS v1+.
+  - [cyberark/conjur-service-broker#203](https://github.com/cyberark/conjur-service-broker/issues/203)
+
+* Add organization_name and space_name annotations
+  - Service Broker API spec 2.15 and above provide `organization_name` and
+    `space_name`. If these are available, they are added as annotations on the
+    organization and space policies that are created in Conjur. [cyberark/conjur-service-broker#238](https://github.com/cyberark/conjur-service-broker/issues/238)
+  - Requires Conjur Open Source v1.3.7+ or Conjur Enterprise (formerly Dynamic Access Provider) v11.3.0+
+
+* Support for using Summon environments in secrets.yml file
+  - secrets.yml files can be split into sections by environment and secrets to
+    load at runtime can be specified using new SECRETS_YAML_ENVIRONMENT
+    variable. [cyberark/cloudfoundry-conjur-buildpack#44](https://github.com/cyberark/cloudfoundry-conjur-buildpack/issues/44)
+
+* Fixed error messages with invalid line numbers
+  - Caused by Cloudfoundry Buildpack encountering errors while parsing environment
+    variable settings after retrieving secrets from Conjur. [cyberark/cloudfoundry-conjur-buildpack#120](https://github.com/cyberark/cloudfoundry-conjur-buildpack/issues/120)
+
+Fixed issues in this release:
+
+* Upgraded Ruby dependencies to resolve security vulnerabilities
+  - [cyberark/conjur-service-broker#241](https://github.com/cyberark/conjur-service-broker/pull/241),
+    [cyberark/conjur-service-broker#246](https://github.com/cyberark/conjur-service-broker/pull/246),
+    [cyberark/conjur-service-broker#251](https://github.com/cyberark/conjur-service-broker/pull/251)
+
+Known issues in this release:
+
+* Service broker fails if not installed with ruby buildpack v1.8.37
+  - The service broker currently requires Ruby 2.5.8, which was removed in ruby
+    buildpack versions later than v1.8.37. As a result, we have pinned the
+    service broker to use v1.8.37 [cyberark/conjur-service-broker#253](https://github.com/cyberark/conjur-service-broker/pull/253)
+
 ## <a id="ver"></a> v1.2.1
 
 **Release Date:** January 15, 2021
