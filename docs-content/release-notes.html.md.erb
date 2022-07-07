@@ -5,6 +5,19 @@ owner: Partners
 
 These are release notes for CyberArk Conjur Service Broker for VMware Tanzu
 
+## <a id="ver"></a> v1.3.2
+
+**Release Date:** June 22, 2022
+
+- CyberArk Conjur Service Broker - [v1.2.5](https://github.com/cyberark/conjur-service-broker/releases/v1.2.5)
+- CyberArk Conjur Buildpack - [v2.2.4](https://github.com/cyberark/cloudfoundry-conjur-buildpack/releases/v2.2.4)
+
+Fixed issues in this release:
+
+* Unpinned the Ruby Buildpack in the Conjur Service Broker's manifest.yml and updated the pinned Ruby version in the service broker's Gemfile to ~> 2.7, to capture the idea that the service broker works for all 2.x Ruby versions from 2.7 and up, since any lesser version has reached end of life. See [CHANGELOG between v2.2.1 and v2.2.4](https://github.com/cyberark/conjur-service-broker/blob/v1.2.5/CHANGELOG.md)
+* Upgraded Golang dependencies in Conjur Buildpack to resolve security vulnerabilities. See [CHANGELOG between v2.2.1 and v2.2.4](https://github.com/cyberark/cloudfoundry-conjur-buildpack/blob/v2.2.4/CHANGELOG.md)
+* Upgraded Ruby dependencies in Conjur Service Broker to resolve security vulnerabilities. See [CHANGELOG between v1.2.1 and v1.2.5](https://github.com/cyberark/conjur-service-broker/blob/v1.2.5/CHANGELOG.md)
+
 ## <a id="ver"></a> v1.3.0
 
 **Release Date:** August 10, 2021
