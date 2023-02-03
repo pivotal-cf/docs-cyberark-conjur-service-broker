@@ -34,7 +34,7 @@ settings migrate to the new version when you add the upgrade tile to the Ops Man
 
 Version 1.1.0 introduces the option to create space-scoped host identities rather
 than application specific host identities. These identities are created when the
-service instance is created in a space. 
+service instance is created in a space.
 
 To use space host identities in a space that already has a Conjur service instance
 provisioned, you must first remove and re-create the Conjur Service instance in that space.
@@ -68,7 +68,7 @@ To remove and re-create the Conjur Service instance, do the following:
     ```
 
 5. Re-bind each application to the Conjur service
-   
+
    ```
    cf bind-service my-app conjur
    ```
@@ -83,7 +83,7 @@ Before you upgrade the tile version from 0.3.3 to 1.0.0 in the Ops Manager, you 
 rename the existing service broker and service broker application in VMware Tanzu. This is
 accomplished with the these steps:
 
-> **Note**: These steps require the CloudFoundry CLI, `cf`.
+> **Note:** These steps require the CloudFoundry CLI, `cf`.
 
 1. Target the CyberArk Conjur space:
 
@@ -137,12 +137,11 @@ must either add it to the application's manifest, or include the buildpack in th
 
 - To add the buildpack to the `cf push` command, include the argument `-b conjur_buildpack`
   prior to the final or primary application buildpack. For example:
-  
+
     ```
     cf push my-app -b conjur_buildpack ... -b final_buildpack
     ```
 
-<br/>
 **(Optional) Delete Meta Buildpack**
 
 The Conjur Buildpack version 1.0.0 used a Meta Buildpack which is no longer required by
@@ -155,15 +154,12 @@ To remove it it, use the command:
 cf delete-buildback meta_buildpack
 ```
 
-<br/>
 **(Optional) Enable Org/Space Permissions in Existing Spaces**
 
 Any Spaces where a Conjur service instance is already provisioned will not be automatically
 upgraded to support the new Org and Space entitlements, and need to be manually provisioned.
 
-> **Note:** Existing application entitlements will continue to function without this step.
-> New applications, however, will not be able to bind with the Conjur service without this
-> provisioning step.
+> **Note:** Existing application entitlements will continue to function without this step. New applications, however, will not be able to bind with the Conjur service without this provisioning step.
 
 To provision an existing Space with a Conjur service instance, follow these steps:
 
@@ -175,8 +171,7 @@ To provision an existing Space with a Conjur service instance, follow these step
 
 2. Create a new conjur service instance:
 
-    > **Note:** This step causes the service broker to initialize the Org and Space
-    > policy branches and Conjur layers for entitlement at the Org and Space level.
+    > **Note:** This step causes the service broker to initialize the Org and Space policy branches and Conjur layers for entitlement at the Org and Space level.
 
     ```
     cf create-service cyberark-conjur community conjur-provision
@@ -193,11 +188,10 @@ existing space will fail to bind to thte Conjur service without this provisionin
 
 To migrate existing spaces to the new Org and Spa
 
-<br/>
 **(Optional) Re-Bind Existing Applications to Conjur**
 
 Applications bound to Conjur using version 0.3.3 of Cyberark Conjur Service Broker for VMware Tanzu
-do not automatically re-bind to the Conjur service and be given new host IDs during the 
+do not automatically re-bind to the Conjur service and be given new host IDs during the
 upgrade. This means existing applications do not inherit the Org and Space permissions
 by default.
 
@@ -218,9 +212,7 @@ service. To accomplish this:
 
 3. Bind the application back to the Conjur service:
 
-    > **Warning:** This issues a **NEW** host ID to the application. So any secret
-    > entitlements specific to the application must be granted again in Conjur policy
-    > to the new host id.
+    > **Warning:** This issues a **NEW** host ID to the application. So any secret entitlements specific to the application must be granted again in Conjur policy to the new host id.
 
     ```
     cf unbind-service [app-name] [conjur-service-instance-name]

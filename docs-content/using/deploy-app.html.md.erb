@@ -6,18 +6,18 @@ You can push the same application to multiple spaces. After you prepare the appl
  - [Step 1: Prepare the Application](#secrets)
  - [Step 2: Create a Service Instance](#create-service)
  - [Step 3: Permit Secret Access by Org and Space (Conjur Open Source and Conjur EE v5+ only)](#permit-org-space)
- - [Step 4: Edit Manifest File](#edit-manifest)
+ - [Step 4: Edit Application Manifest](#edit-manifest)
  - [Step 5: Push Application to PCF Space](#push-app)
 
 #### <a id="secrets"></a>Step 1: Prepare the Application
 
 The CyberArk Conjur Service Broker for PCF uses the Summon application included in the Conjur Buildpack by default to fetch secrets from the Conjur appliance and inject the values into your application's environment.
 
-The secrets, fetched at application startup, are available only to the application process (not to 
+The secrets, fetched at application startup, are available only to the application process (not to
 users), and are gone when the process exits.  Summon requires a `secrets.yml` file in the application's root folder.
 
 If your application requires the `secrets.yml` file to be placed in a non-root directory,
-the runtime location for `secrets.yml` can be configured by setting the 
+the runtime location for `secrets.yml` can be configured by setting the
 `SECRETS_YAML_PATH` environment variable for the Cloud Foundry application. You can find more
  information on this in [Configuring the `secrets.yml` Location](#secrets-yaml-path).
 
@@ -33,8 +33,8 @@ If your application uses another method to access secrets, such as Conjur API ca
 3. Store the `secrets.yml` file in the root folder of your application.
 
     > **NOTE:** If you deploy your application in a packaged format (e.g. as a JAR file),
-    > you will want to ensure your secrets.yml configuration file is available 
-    > in the root application directory at deploy time (e.g. for a JAR file, 
+    > you will want to ensure your secrets.yml configuration file is available
+    > in the root application directory at deploy time (e.g. for a JAR file,
     > you can store secrets.yml in the src/main/resources directory of your application
     > if using Spring Boot versions below 1.4).
 
@@ -65,7 +65,9 @@ If your application uses another method to access secrets, such as Conjur API ca
       To accomplish this with `my-app.yml`, first create a policy
       branch, for example `apps`, and then load the app policy to that branch:
 
-      <pre class='term'>$ conjur policy load apps my-app.yml
+      ```
+      $ conjur policy load apps my-app.yml
+      ```
 
 ##### <a id="secrets.yml"></a>Example: secrets.yml
 
@@ -125,7 +127,9 @@ Value added
 
 In the PCF space where you intend to deploy the application, create a service instance.
 
-<pre class='term'>$ cf create-service cyberark-conjur community conjur</pre>
+```
+$ cf create-service cyberark-conjur community conjur
+```
 
 In the command above:
 
@@ -156,6 +160,7 @@ resources are Conjur layers named using the Globally Unique Identifiers (GUIDs) 
 Space.
 
 The Org and Space GUIDs may be retrieved from CloudFoundry using the `cf` CLI tool. For example:
+
 ```
 $ cf org --guid my-org
 8f366b77-d826-4522-8cc6-261bf9b02cba
@@ -227,7 +232,6 @@ its relative path.
 This can be configured in the application's `manifest.yml`:
 
 ```
----
 applications:
 - name: my-app
   services:
@@ -240,6 +244,7 @@ applications:
 ```
 
 Alternatively, this may be set using the Cloud Foundry CLI:
+
 ```
 $ cf set-env {Application Name} SECRETS_YAML_PATH {Relative Path to secrets.yml}
 $ cf restage {Application Name}

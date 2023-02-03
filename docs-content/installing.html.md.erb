@@ -23,7 +23,6 @@ This adds the tile to your staging area.
   * [Assign AZs and Networks](#assign-az)
   * [Service Broker Configuration](#config-service-broker)
   * [Service Access](#config-service-access)
-  * [Stemcell](#config-stemcell)
 
 1. Click **Save**.
 
@@ -79,7 +78,7 @@ This tab configures communication between the Service Broker and a Conjur applia
   The fully-qualified Conjur Policy ID of the dedicated Conjur policy for VMware Tanzu that you created (e.g. `pcf/production`). Leave blank to default to the root policy (not recommended).
 
   * <a name="space-scoped-identity"></a> **Enable Spaced-scoped App Identities**
-    
+
     When an application is bound to the Conjur service, it receives an identity in Conjur
     and credentials to authenticate to Conjur.
     <br/><br/>
@@ -107,7 +106,7 @@ This tab configures communication between the Service Broker and a Conjur applia
     If you use space host identities, only use the org and space layers to permit
     access to secrets. More information on this is available [in the Using guide.](using.html#permit-org-space)
     <br/><br/>
-    
+
     **Application-scoped Identity**
     <br/>
     If **Enable Spaced-scoped App Identities** option is not selected, the service broker creates a new
@@ -118,22 +117,22 @@ This tab configures communication between the Service Broker and a Conjur applia
     <br/><br/>
     Application host identities may be permitted to access secrets at the [org and space level](using.html#permit-org-space)
     or at the [individual application level.](using.html#entitle-application)
-  
+
   * **Conjur Certificate**:
     The PEM encoded x509 certificate chain for the Conjur server.
     <br/><br/>
     This certificate chain may be retrieved from the Conjur server using the command:
-    <pre class='term'>
+
+```
 $ openssl s_client -showcerts -servername [CONJUR_DNS_NAME] \
         -connect [CONJUR_DNS_NAME]:443 < /dev/null 2> /dev/null \
         | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
 -----BEGIN CERTIFICATE-----
 ...
 -----END CERTIFICATE-----
-    </pre>
+```
 
-    <br/>
-    The certificate value should include the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines:
+The certificate value should include the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines:
 
     ```
     -----BEGIN CERTIFICATE-----
