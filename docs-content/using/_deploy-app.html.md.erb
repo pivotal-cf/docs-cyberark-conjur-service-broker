@@ -51,10 +51,15 @@ If your application uses another method to access secrets, such as Conjur API ca
 
       Add `!include my-app.yml` to the body of the `pcf` policy (defined in `pcf.yml` in the example below) and reload the policy as follows:
 
-      <pre class='term'>$ conjur policy load --as-group security_admin pcf.yml</pre>
+      ```
+      $ conjur policy load --as-group security_admin pcf.yml
+      ```
 
       If `pcf.yml` contains only the `pcf` policy, and if we have set that policy so that it is owned by the `pcf-admin-group` group, you could also reload by calling:
-      <pre class='term'>$ conjur policy load --as-group pcf-admin-group pcf.yml</pre>
+
+      ```
+      $ conjur policy load --as-group pcf-admin-group pcf.yml
+      ```
 
     **For Open Source Conjur and Enterprise Conjur v5:**
 
@@ -214,7 +219,9 @@ More information on using the Conjur Summon buildpack [can be found here](https:
 
 Target your desired orgs and spaces and push the application and its associated files.
 
-<pre class='term'>cf push ...</pre>
+```
+cf push ...
+```
 
 If you're using Conjur EE v5+ or Conjur Open Source v1+ and you're entitling your applications
 to access secrets in Conjur at the org or space level, then you're done!
