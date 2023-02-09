@@ -179,11 +179,6 @@ $ openssl s_client -showcerts -servername [CONJUR_DNS_NAME] \
        $ cf create-service cyberark-conjur community my-service-instance-name
     ```
 
-+ **(Conjur EE v4.x only) Conjur Host Factory**
-
-    The Service Broker requires a Conjur host factory to use when adding host identities. The examples in [Recommendations](#recommendations) include host factory definitions. If a host factory is not properly defined, a health check near the end of tile installation will report the condition, and the tile installation will fail.
-
-
 ## <a id="recommendations"></a>Recommendations
 
 ### Create a Dedicated Conjur Policy for VMware Tanzu
@@ -211,13 +206,11 @@ A dedicated Conjur policy for VMware Tanzu supports least privilege principles i
 * The secrets, host identities, and access control policies for your VMware Tanzu-deployed applications are isolated from other resources stored in Conjur.
 * Conjur access privileges required by the Service Broker, DevOps teams, and your applications can be limited in scope to the dedicated Conjur policy for VMware Tanzu.
 * You can give a limited set of Conjur users access to the dedicated Conjur policy for VMware Tanzu, with even finer-grained permissions possible within the VMware Tanzu policy itself.
-* For Conjur Enterprise (v4), you can define the host factory layer in the dedicated Conjur policy for VMware Tanzu, rather than in the root policy.
 
 When creating the dedicated Conjur policy for VMware Tanzu, consider the following:
 
 * The Service Broker requires `create` and `update` privileges on the policy to add and remove host identities. Members of the group that owns the policy have those privileges.
 * VMware Tanzu DevOps personnel need access to Conjur to declare application secrets and grant privileges to the applications to access those secrets.
-* For Conjur Enterprise (v4), a host factory is required. Both the ID of the layer and the host factory must use the syntax `[policy-id]-apps`, where `apps` is a constant. For example, `pcf/production-apps` is used in the policy example shown below where the dedicated policy for VMware Tanzu is called `pcf/production`.
 
 To create a dedicated Conjur policy for VMware Tanzu, do the following:
 
@@ -251,55 +244,17 @@ Create a policy using the following example as a guide. Save the policy as a YAM
     id: production                   # Multiple VMware Tanzu Foundations may be identified using
                                      # a sub-policy branch, e.g. "production".
     owner: !group /pcf-admin-group   # Owners have complete privileges on the policy
-
-    # The policy body, layer, and host factory
-    # are required for Conjur EE v4:
-    body:
-
-    # Layer name and host-factory name must be [policy-id]-apps
-    - !layer pcf/production-apps
-
-    - !host-factory
-      id: pcf/production-apps
-      layers: [ !layer pcf/production-apps ]
 ```
 
 This policy file creates a `host/pcf-service-broker` host that can be used as the `CONJUR_AUTHN_LOGIN` role
 in the tile configuration. The `pcf-service-broker` host is a member of the `pcf-admin-group` group, which
 owns the `pcf/production` policy, so it has `create` and `update` privileges on that policy as required.
 
-The VMware Tanzu policy has a `pcf/production-apps` layer and corresponding host factory. If using Conjur v4, application
-hosts will be added to the `pcf/production-apps` layer via the `pcf-apps` host factory when the application is
-bound to a Conjur service instance.
-
 #### Step 2
 
 Load the policy into Conjur as follows (in this example, we are loading it into the root policy):
 
-**For Conjur Enterprise v4:**
-
-<pre class='term'>$ conjur policy load --as-group security_admin your-pcf-policy-file.yml</pre>
-
-> **NOTE:** You may have to first install the `policy` plugin for the Conjur CLI. If you receive
-> this message when loading the policy:
->
-> ```
-> $ conjur policy load ...
-> error: Unknown command 'policy'
-> ```
->
-> Then you may install the `policy` plugin using the command:
->
-> ```
-> $ conjur plugin install policy
-> Successfully installed conjur-asset-policy-0.13.0
-> 1 gem installed
-> ```
-
-
-**For Conjur Open Source and Conjur Enterprise v5:**
-
-<pre class='term'>$ conjur policy load root your-pcf-policy-file.yml</pre>
+<pre class='term'>$ conjur policy load -b root -f your-pcf-policy-file.yml</pre>
 
 Loading this policy the first time will output the API key for the `pcf-service-broker` host. Save
 this key to use when configuring the VMware Tanzu tile below.
@@ -316,7 +271,7 @@ In the CyberArk Conjur Service Broker for VMware Tanzu tile configuration:
   needs to be permitted to read its own annotations.
 
 * For **Conjur API Key**, use that host's API key. The admin who created the role can retrieve the value with this command:
-  <pre class='term'>$ conjur host rotate_api_key -h pcf-service-broker</pre>
+  <pre class='term'>$ conjur host rotate-api-key -i pcf-service-broker</pre>
 
 
 ### Using the Default Root Policy
@@ -327,15 +282,6 @@ If you decide to leave the **VMware Tanzu Conjur Policy Namespace** blank in the
 * The Conjur host identity that you provide on tile installation must have `create` and `update` privileges on the root policy, which means that it will be privileged to edit _any policy in your Conjur installation_.
 * The Service Broker will add host identities for your VMware Tanzu applications to the root policy.
 * The VMware Tanzu DevOps teams will be altering policy files in the root policy.
-* For integration with Conjur v4, a Host Factory named `apps` is required. Add the following layer declaration to the root policy:
-
-    ```
-    - !layer apps
-
-    - !host-factory
-    id: apps
-    layers: [ !layer apps ]
-    ```
 
 ## <a id="limitations"></a>Limitations
 
