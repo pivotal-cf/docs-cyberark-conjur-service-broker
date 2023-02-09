@@ -38,24 +38,6 @@ may still be used to permit specific applications to access Conjur secrets.
 2. Update policy to grant read and execute privileges to the new host ID on a set of secrets.
    For example, the following policy adds the new host to the existing secrets-users group. You can save these lines in a separate file, such as `app-entitlements.yml`.
 
-   **For Conjur Enterprise v4:**
-
-   ```
-    # app-entitlements.yml
-
-   - !grant
-     role: !group my-app/secrets-users
-     member: !host /pcf/production/0299a19d-7de4-4e98-89f6-372ac7c0521f
-   ```
-
-   Load the policy with:
-
-   ```
-   conjur policy load --as-group security_admin app-entitlements.yml
-   ```
-
-   **For Conjur Open Source and Conjur Enterprise v5:**
-
    The application host will be loaded into the Org and Space policy hierarchy:
 
    ```
@@ -67,13 +49,11 @@ may still be used to permit specific applications to access Conjur secrets.
    Load the policy with:
 
    ```
-   conjur policy load root app-entitlements.yml
+   conjur policy load -b root -f ./app-entitlements.yml
    ```
 
 3. Load the policy change. The following command loads the grant in `entitlements.yml` into the `apps` Conjur policy:
-   <pre class='term'>$ conjur policy load apps entitlements.yml</pre>
-
-   In Enterprise Conjur (v4), you could also choose to use an `!include` statement in the existing PCF Policy.
+   <pre class='term'>$ conjur policy load -b apps -f ./entitlements.yml</pre>
 
 ####<a id="restage"></a>Step 3: Restage the Application
 
