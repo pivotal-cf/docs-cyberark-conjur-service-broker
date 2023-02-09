@@ -123,16 +123,16 @@ This tab configures communication between the Service Broker and a Conjur applia
     <br/><br/>
     This certificate chain may be retrieved from the Conjur server using the command:
 
-```
-$ openssl s_client -showcerts -servername [CONJUR_DNS_NAME] \
-        -connect [CONJUR_DNS_NAME]:443 < /dev/null 2> /dev/null \
-        | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
------BEGIN CERTIFICATE-----
-...
------END CERTIFICATE-----
-```
+    ```
+    $ openssl s_client -showcerts -servername [CONJUR_DNS_NAME] \
+            -connect [CONJUR_DNS_NAME]:443 < /dev/null 2> /dev/null \
+            | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
+    -----BEGIN CERTIFICATE-----
+    ...
+    -----END CERTIFICATE-----
+    ```
 
-The certificate value should include the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines:
+    The certificate value should include the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines:
 
     ```
     -----BEGIN CERTIFICATE-----
