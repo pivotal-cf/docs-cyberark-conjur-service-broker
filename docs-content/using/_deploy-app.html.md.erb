@@ -47,32 +47,15 @@ If your application uses another method to access secrets, such as Conjur API ca
 
 5. If you created a `my-app.yml` policy file, load it into Conjur under the dedicated Conjur policy for PCF. For example, if your dedicated Conjur policy for PCF is called `pcf`:
 
-    **For Enterprise Conjur v4:**
+    The recommendation is to store the policy for resources and secrets outside of the service broker managed
+    policy branch.
 
-      Add `!include my-app.yml` to the body of the `pcf` policy (defined in `pcf.yml` in the example below) and reload the policy as follows:
+    To accomplish this with `my-app.yml`, first create a policy
+    branch, for example `apps`, and then load the app policy to that branch:
 
-      ```
-      $ conjur policy load --as-group security_admin pcf.yml
-      ```
-
-      If `pcf.yml` contains only the `pcf` policy, and if we have set that policy so that it is owned by the `pcf-admin-group` group, you could also reload by calling:
-
-      ```
-      $ conjur policy load --as-group pcf-admin-group pcf.yml
-      ```
-
-    **For Open Source Conjur and Enterprise Conjur v5:**
-
-      For Conjur Enterprise v5 and Open Source, the recommendation is to store
-      the policy for resources and secrets outside of the service broker managed
-      policy branch.
-
-      To accomplish this with `my-app.yml`, first create a policy
-      branch, for example `apps`, and then load the app policy to that branch:
-
-      ```
-      $ conjur policy load apps my-app.yml
-      ```
+    ```
+    $ conjur policy load -b apps -f my-app.yml
+    ```
 
 ##### <a id="secrets.yml"></a>Example: secrets.yml
 
@@ -124,7 +107,7 @@ The following example shows a Conjur application policy declaring two secrets as
 Values can be stored in these variables using the Conjur CLI, for example:
 
 ```
-$ conjur variable values add "my-app/db/username" "My username value"
+$ conjur variable set -i "my-app/db/username" -v "My username value"
 Value added
 ```
 
@@ -194,7 +177,7 @@ may be used to access variables in Conjur policy. For example:
 This can then be loaded into conjur with:
 
 ```
-conjur policy load root org-space-entitlements.yml
+conjur policy load -b root -f org-space-entitlements.yml
 ```
 
 #### <a id="edit-manifest"></a> Step 4: Edit Application Manifest
