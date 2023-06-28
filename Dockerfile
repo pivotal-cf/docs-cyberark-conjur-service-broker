@@ -1,4 +1,4 @@
-FROM ruby:2.4-stretch as pivotal-docs-site
+FROM ruby:3.1 as pivotal-docs-site
 
 RUN mkdir -p /docs/docs-book
 
